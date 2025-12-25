@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "skyjourney",
+  "version": "${version}",
+  "name": "SkyJourney",
+  "description": "空を旅してこ～",
+  "authors": ["Celeste"],
+  "contact": {},
+  "license": "LGPL-3.0",
+  "icon": "assets/skyjourney/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "celeste.skyjourney.client.SkyjourneyDataGenerator"
+    ],
+    "client": [
+      "celeste.skyjourney.client.SkyjourneyClient"
+    ],
+    "main": [
+      "celeste.skyjourney.SkyJourneyMod"
+    ]
+  },
+  "mixins": [
+    "skyjourney.mixins.json",
+    {
+      "config": "skyjourney.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "minecraft": "1.20.1",
+    "fabric": "*"
+  }
+}

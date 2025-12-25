@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "celeste.skyjourney.mixin",
+  "refmap": "skyjourney.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "SneakMixin",
+    "LivingEntityAccessor",
+    "VillagerShipMixin",
+    "PointOfInterestStorageMixin",
+    "PointOfInterestAccessor",
+    "VillagerEntityAccessor",
+    "ServerWorldMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
