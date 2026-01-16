@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public abstract class SneakMixin {
 
     /**
-     * Entity.move メソッドの先頭で、移動ベクトル (movement) をインターセプトして補正する。
+     * Entity.move メソッドの先頭で、移動ベクトルを補正
      */
     @ModifyVariable(method = "move", at = @At("HEAD"), argsOnly = true)
     private Vec3d onMoveHead(Vec3d movement) {

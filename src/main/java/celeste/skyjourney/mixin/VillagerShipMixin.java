@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.Unique;
 import org.valkyrienskies.core.api.ships.Ship;
 
 import java.util.ArrayList;
@@ -27,8 +28,10 @@ import java.util.stream.Collectors;
 @Mixin(VillagerEntity.class)
 public class VillagerShipMixin {
 
+    @Unique
     private int tickCounter = 0;
 
+    @Unique
     private boolean skyjourney$foundShipPOI = false;
 
     @Inject(method = "mobTick", at = @At("HEAD"))
@@ -37,7 +40,7 @@ public class VillagerShipMixin {
             return;
 
         VillagerEntity entity = (VillagerEntity) (Object) this;
-        // 20tick（1秒）ごとに実行
+        // 20tickごとに実行
         if (tickCounter++ % 20 != 0)
             return;
 
@@ -64,12 +67,12 @@ public class VillagerShipMixin {
             PointOfInterestStorage poiStorage = world.getPointOfInterestStorage();
             int range = 4;
 
-            // 早期手動補充チェック（確実に動作させるため、候補スキャン前に実行）
+            // 早期手動補充チェック
             Brain<?> brain = entity.getBrain();
             if (brain.hasMemoryModule(MemoryModuleType.JOB_SITE)) {
                 Optional<GlobalPos> jobSite = brain.getOptionalMemory(MemoryModuleType.JOB_SITE);
 
-                if (jobSite.isPresent()) {
+                if (jobSite != null && jobSite.isPresent()) {
                     GlobalPos currentJobWorld = jobSite.get();
                     if (currentJobWorld.getDimension() == world.getRegistryKey()) {
                         GhostPOIManager.add(currentJobWorld.getPos());
@@ -86,12 +89,12 @@ public class VillagerShipMixin {
             boolean isLocked = entity.getExperience() > 0;
             net.minecraft.village.VillagerProfession currentProf = entity.getVillagerData().getProfession();
 
-            // 空きのある候補を取得 (Stream of PointOfInterest)
+            // 空きのある候補を取得
             List<net.minecraft.world.poi.PointOfInterest> candidates = poiStorage.getInSquare(
-                            (type) -> true,
-                            shipyardPos,
-                            range,
-                            PointOfInterestStorage.OccupationStatus.ANY)
+                    (type) -> true,
+                    shipyardPos,
+                    range,
+                    PointOfInterestStorage.OccupationStatus.ANY)
                     .filter(poi -> {
                         // ロック済みの場合、現在の職業と一致する必要がある
                         if (isLocked) {
@@ -105,7 +108,7 @@ public class VillagerShipMixin {
             BlockPos currentJobShipyardPos = null;
             if (brain.hasMemoryModule(MemoryModuleType.JOB_SITE)) {
                 Optional<GlobalPos> jobSite = brain.getOptionalMemory(MemoryModuleType.JOB_SITE);
-                if (jobSite.isPresent()) {
+                if (jobSite != null && jobSite.isPresent()) {
                     GlobalPos currentJobWorld = jobSite.get();
                     // このゴースト座標を維持
                     GhostPOIManager.add(currentJobWorld.getPos());
@@ -138,7 +141,7 @@ public class VillagerShipMixin {
                 return;
             }
 
-            // 距離順にソート（ゴースト座標を使用）
+            // 距離順にソート
             candidates.sort((p1, p2) -> {
                 Vector3d gp1 = new Vector3d(p1.getPos().getX() + 0.5, p1.getPos().getY() + 0.5,
                         p1.getPos().getZ() + 0.5);
@@ -173,13 +176,12 @@ public class VillagerShipMixin {
                         canClaim = accessor.invokeReserveTicket();
                     } else {
                         // リーク修正 / 乗っ取り: 近くにいて満員の場合、ゴースト予約とみなして乗っ取り/リセットを行う。
-                        // 非常に近い場合（3ブロック以内）のみ実行
                         Vector3d gp = new Vector3d(bestPOI.getPos().getX() + 0.5, bestPOI.getPos().getY() + 0.5,
                                 bestPOI.getPos().getZ() + 0.5);
                         ship.getTransform().getShipToWorld().transformPosition(gp);
                         double distSq = entity.squaredDistanceTo(gp.x, gp.y, gp.z);
 
-                        if (distSq < 9.0) { // 距離3ブロック
+                        if (distSq < 9.0) {
                             // 強制解放して再取得
                             poiStorage.releaseTicket(bestPOI.getPos());
                             canClaim = accessor.invokeReserveTicket();
@@ -191,12 +193,9 @@ public class VillagerShipMixin {
                     }
 
                     if (canClaim) {
-                        // 成功
                         if (currentJobShipyardPos != null) {
                             poiStorage.releaseTicket(currentJobShipyardPos);
                         }
-
-                        // 注入
                         injectPOI(world, entity, ship, bestPOI.getPos());
                         if (!isLocked) {
                             ensureProfession(entity, bestPOI.getType());
@@ -230,7 +229,7 @@ public class VillagerShipMixin {
                 brain.remember(MemoryModuleType.SECONDARY_JOB_SITE, secList);
             }
 
-            // 手動補充ロジック（船上で失敗するAIのWorkTaskブロック状態チェックをバイパス）
+            // 手動補充ロジック
             // foundShipPOIとは独立して、もし仕事を持っていてそこにいるなら、働く。
             if (currentJobShipyardPos != null) {
                 // 距離チェックのためのワールド座標計算
@@ -249,6 +248,7 @@ public class VillagerShipMixin {
         }
     }
 
+    @Unique
     private void tryManualRestock(ServerWorld world, VillagerEntity entity) {
         long time = world.getTimeOfDay() % 24000;
         boolean isWorkTime = time > 2000 && time < 9000;
@@ -264,7 +264,7 @@ public class VillagerShipMixin {
         }
 
         if (isWorkTime) {
-            // 制限チェック（バニラ: 1日2回）
+            // 制限チェック
             if (count < 2 && world.getTime() > lastRestock + 200) {
                 accessor.invokeRestock();
                 accessor.invokePlayWorkSound();
@@ -272,6 +272,7 @@ public class VillagerShipMixin {
         }
     }
 
+    @Unique
     private void injectPOI(ServerWorld world, VillagerEntity entity, Ship ship, BlockPos shipyardPos) {
         Vector3d ghostPosVec = new Vector3d(shipyardPos.getX() + 0.5, shipyardPos.getY() + 0.5,
                 shipyardPos.getZ() + 0.5);
@@ -287,6 +288,7 @@ public class VillagerShipMixin {
         brain.remember(MemoryModuleType.JOB_SITE, target);
     }
 
+    @Unique
     private void ensureProfession(VillagerEntity entity, RegistryEntry<PointOfInterestType> poiType) {
         if (entity.getVillagerData().getProfession() == net.minecraft.village.VillagerProfession.NONE) {
             for (net.minecraft.village.VillagerProfession prof : net.minecraft.registry.Registries.VILLAGER_PROFESSION) {

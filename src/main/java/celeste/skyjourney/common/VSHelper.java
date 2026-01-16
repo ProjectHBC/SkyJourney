@@ -27,8 +27,6 @@ public class VSHelper {
 
     /**
      * 管理Shipが見つからない場合、エンティティと交差しているShipを探して返す。
-     * プレイヤーが Overworld 座標系にいながら、Ship Entity の上に乗っている場合などの
-     * 管理外状態での検出に使用
      *
      * @return 交差しているShip、見つからない場合はnull
      */

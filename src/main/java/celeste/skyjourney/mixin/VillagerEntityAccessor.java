@@ -16,9 +16,6 @@ public interface VillagerEntityAccessor {
     @Accessor("lastRestockTime")
     long getLastRestockTime();
 
-    @Accessor("lastRestockTime")
-    void setLastRestockTime(long time);
-
     @Accessor("restocksToday")
     int getRestocksToday();
 

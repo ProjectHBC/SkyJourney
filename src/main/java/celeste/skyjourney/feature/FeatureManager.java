@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * MOD内の各機能（Feature）のライフサイクルと設定を管理するクラス。
+ * MOD内の各機能のライフサイクルと設定を管理
  */
 public class FeatureManager {
 
