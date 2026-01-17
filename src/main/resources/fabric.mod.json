@@ -18,6 +18,9 @@
     ],
     "main": [
       "celeste.skyjourney.SkyJourneyMod"
+    ],
+    "modmenu": [
+      "celeste.skyjourney.config.SkyJourneyModMenuIntegration"
     ]
   },
   "mixins": [
