@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
 import org.valkyrienskies.core.api.ships.Ship;
@@ -31,7 +32,7 @@ public class SneakGroundFix {
             return movement;
         }
 
-        // ジャンプ中であれば補正を行わず、移動（落下含む）を許可
+        // ジャンプ中であれば補正を行わず、移動を許可
         if (entity instanceof LivingEntity && ((LivingEntityAccessor) entity).isJumping()) {
             return movement;
         }
@@ -50,20 +51,20 @@ public class SneakGroundFix {
         World world = entity.getWorld();
 
         // 現在位置が既に空中（足場がない）であれば、補正を行わずに移動を許可
-        if (!hasSupport(world, ship, localPos.x, localPos.y, localPos.z, entity)) {
+        if (!hasSupport(world, localPos.x, localPos.y, localPos.z, entity)) {
             return movement;
         }
 
         // X方向の移動安全確認
         double nextLocalX = localPos.x + localMove.x;
-        boolean safeX = hasSupport(world, ship, nextLocalX, localPos.y, localPos.z, entity);
+        boolean safeX = hasSupport(world, nextLocalX, localPos.y, localPos.z, entity);
         if (!safeX) {
             localMove.x = 0;
         }
 
         // Z方向の移動安全確認
         double nextLocalZ = localPos.z + localMove.z;
-        boolean safeZ = hasSupport(world, ship, localPos.x, localPos.y, nextLocalZ, entity);
+        boolean safeZ = hasSupport(world, localPos.x, localPos.y, nextLocalZ, entity);
         if (!safeZ) {
             localMove.z = 0;
         }
@@ -72,7 +73,7 @@ public class SneakGroundFix {
         if (localMove.x != 0 && localMove.z != 0) {
             double diagX = localPos.x + localMove.x;
             double diagZ = localPos.z + localMove.z;
-            boolean safeDiag = hasSupport(world, ship, diagX, localPos.y, diagZ, entity);
+            boolean safeDiag = hasSupport(world, diagX, localPos.y, diagZ, entity);
             if (!safeDiag) {
                 localMove.x = 0;
                 localMove.z = 0;
@@ -92,8 +93,8 @@ public class SneakGroundFix {
      * @param localZ ローカルZ座標
      * @return 足場が存在する場合はtrue
      */
-    private static boolean hasSupport(World world, Ship ship, double localX, double localY, double localZ,
-                                      Entity entity) {
+    private static boolean hasSupport(World world, double localX, double localY, double localZ,
+            Entity entity) {
         // 足元領域の定義
         double boxSizeXZ = 0.05;
         double lowerY = localY - 0.75;
@@ -103,10 +104,9 @@ public class SneakGroundFix {
                 localX - boxSizeXZ, lowerY, localZ - boxSizeXZ,
                 localX + boxSizeXZ, upperY, localZ + boxSizeXZ);
 
-        // World.getCollisions は配置されたShipチャンクに対して判定を行えるため、座標変換なしでチェック
-        Iterable<net.minecraft.util.shape.VoxelShape> collisions = world.getCollisions(entity, checkArea);
+        Iterable<VoxelShape> collisions = world.getCollisions(entity, checkArea);
 
-        for (net.minecraft.util.shape.VoxelShape shape : collisions) {
+        for (VoxelShape shape : collisions) {
             if (!shape.isEmpty()) {
                 return true;
             }

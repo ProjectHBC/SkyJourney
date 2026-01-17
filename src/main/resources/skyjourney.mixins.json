@@ -8,10 +8,12 @@
     "SneakMixin",
     "LivingEntityAccessor",
     "VillagerShipMixin",
+    "TerrainBakingOptimizationMixin",
     "PointOfInterestStorageMixin",
     "PointOfInterestAccessor",
     "VillagerEntityAccessor",
-    "ServerWorldMixin"
+    "ServerWorldMixin",
+    "PlacementCollisionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

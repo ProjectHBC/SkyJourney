@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GhostPOIManager {
     private static final Map<BlockPos, Long> validGhostPositions = new ConcurrentHashMap<>();
-    private static final long EXPIRATION_MS = 5000; // 5 seconds validity
+    private static final long EXPIRATION_MS = 5000;
 
     public static void add(BlockPos pos) {
         validGhostPositions.put(pos, System.currentTimeMillis());
@@ -24,5 +24,4 @@ public class GhostPOIManager {
         }
         return true;
     }
-
 }

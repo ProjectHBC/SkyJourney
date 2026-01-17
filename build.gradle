@@ -39,6 +39,11 @@ repositories {
         name = "Valkyrien Skies"
         url = "https://maven.valkyrienskies.org"
     }
+    maven { url "https://maven.shedaniel.me/" }
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 dependencies {
@@ -62,6 +67,10 @@ dependencies {
     implementation("org.valkyrienskies.core:util:${vscore_version}") {
         exclude group: 'org.joml', module: ''
     }
+    modApi("me.shedaniel.cloth:cloth-config-fabric:11.1.118") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {
