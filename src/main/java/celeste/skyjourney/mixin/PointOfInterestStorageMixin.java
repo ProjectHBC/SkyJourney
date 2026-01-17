@@ -7,6 +7,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
+import net.minecraft.util.math.Box;
+import net.minecraft.registry.RegistryKey;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 import org.spongepowered.asm.mixin.Unique;
-
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
 
         // 造船所チェックロジック
         try {
-            net.minecraft.util.math.Box box = new net.minecraft.util.math.Box(pos).expand(0.5);
+            Box box = new Box(pos).expand(0.5);
             Iterable<Ship> ships = VSGameUtilsKt.getShipsIntersecting(world, box);
             for (Ship ship : ships) {
                 // ワールド座標 -> 造船所座標
@@ -86,7 +87,7 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
     }
 
     @Inject(method = "hasTypeAt", at = @At("HEAD"), cancellable = true)
-    private void onHasTypeAt(net.minecraft.registry.RegistryKey<PointOfInterestType> type, BlockPos pos,
+    private void onHasTypeAt(RegistryKey<PointOfInterestType> type, BlockPos pos,
             CallbackInfoReturnable<Boolean> cir) {
         if (skyjourney$isRedirecting.get())
             return;
@@ -101,7 +102,7 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
             return;
 
         try {
-            net.minecraft.util.math.Box box = new net.minecraft.util.math.Box(pos).expand(0.5);
+            Box box = new Box(pos).expand(0.5);
             Iterable<Ship> ships = VSGameUtilsKt.getShipsIntersecting(world, box);
 
             for (Ship ship : ships) {
@@ -125,5 +126,5 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
     }
 
     @Shadow
-    public abstract boolean hasTypeAt(net.minecraft.registry.RegistryKey<PointOfInterestType> type, BlockPos pos);
+    public abstract boolean hasTypeAt(RegistryKey<PointOfInterestType> type, BlockPos pos);
 }

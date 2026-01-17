@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
 import org.valkyrienskies.core.api.ships.Ship;
@@ -103,9 +104,9 @@ public class SneakGroundFix {
                 localX - boxSizeXZ, lowerY, localZ - boxSizeXZ,
                 localX + boxSizeXZ, upperY, localZ + boxSizeXZ);
 
-        Iterable<net.minecraft.util.shape.VoxelShape> collisions = world.getCollisions(entity, checkArea);
+        Iterable<VoxelShape> collisions = world.getCollisions(entity, checkArea);
 
-        for (net.minecraft.util.shape.VoxelShape shape : collisions) {
+        for (VoxelShape shape : collisions) {
             if (!shape.isEmpty()) {
                 return true;
             }

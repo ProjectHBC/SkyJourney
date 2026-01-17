@@ -21,6 +21,11 @@ public class SkyJourneyMod implements ModInitializer {
 
         ServerTickEvents.START_WORLD_TICK.register(TerrainOptimizationManager::onWorldTick);
 
+        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            String json = celeste.skyjourney.config.SkyJourneyConfig.serialize();
+            celeste.skyjourney.network.PacketHandler.sendConfigSync(handler.getPlayer(), json);
+        });
+
         LOGGER.info("[SkyJourney] Initialization complete.");
     }
 }

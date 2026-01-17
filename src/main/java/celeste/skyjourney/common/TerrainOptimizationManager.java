@@ -2,14 +2,30 @@ package celeste.skyjourney.common;
 
 import celeste.skyjourney.config.SkyJourneyConfig;
 import celeste.skyjourney.network.PacketHandler;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import org.valkyrienskies.mod.common.util.VSServerLevel;
-import org.valkyrienskies.mod.common.ValkyrienSkiesMod;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
+import org.valkyrienskies.core.api.ships.Ship;
+import org.valkyrienskies.core.apigame.world.chunks.TerrainUpdate;
 import org.valkyrienskies.mod.common.IShipObjectWorldServerProvider;
+import org.valkyrienskies.mod.common.VSGameUtilsKt;
+import org.valkyrienskies.mod.common.ValkyrienSkiesMod;
 import org.valkyrienskies.mod.common.util.DimensionIdProvider;
+import org.valkyrienskies.mod.common.util.VSServerLevel;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TerrainOptimizationManager {
 
@@ -26,7 +42,7 @@ public class TerrainOptimizationManager {
     public static int totalChunks = 0;
 
     // デバッグキュー
-    public static final java.util.concurrent.ConcurrentLinkedQueue<int[]> debugQueue = new java.util.concurrent.ConcurrentLinkedQueue<>();
+    public static final ConcurrentLinkedQueue<int[]> debugQueue = new ConcurrentLinkedQueue<>();
 
     public static void onWorldTick(ServerWorld world) {
         if (world.isClient)
@@ -38,7 +54,7 @@ public class TerrainOptimizationManager {
 
         // デバッグキューを毎ティックフラッシュ
         if (!debugQueue.isEmpty()) {
-            java.util.List<Integer> flatData = new java.util.ArrayList<>();
+            List<Integer> flatData = new ArrayList<>();
             int count = 0;
             // オーバーフローを防ぐため、1ティックあたり50イベント
             while (!debugQueue.isEmpty() && count < 50) {
@@ -60,8 +76,8 @@ public class TerrainOptimizationManager {
     }
 
     // スキップされたチャンクセクションを追跡
-    public static final java.util.Set<Long> skippedSections = java.util.Collections
-            .newSetFromMap(new java.util.concurrent.ConcurrentHashMap<>());
+    public static final Set<Long> skippedSections = Collections
+            .newSetFromMap(new ConcurrentHashMap<>());
 
     private static void recheckSkippedChunks(ServerWorld world) {
         if (skippedSections.isEmpty())
@@ -71,15 +87,15 @@ public class TerrainOptimizationManager {
         int maxRestoresPerTick = 20;
 
         // 同じチャンクに対する重複呼び出しを避けるため、このティックで復元されたチャンクを追跡
-        java.util.Set<Long> restoredChunks = new java.util.HashSet<>();
+        Set<Long> restoredChunks = new HashSet<>();
 
         // ローカルコピーを取得して反復中の変更を防ぐ
         List<int[]> ranges = allowedRanges;
 
-        java.util.Iterator<Long> it = skippedSections.iterator();
+        Iterator<Long> it = skippedSections.iterator();
         while (it.hasNext()) {
             Long posLong = it.next();
-            net.minecraft.util.math.BlockPos pos = net.minecraft.util.math.BlockPos.fromLong(posLong);
+            BlockPos pos = BlockPos.fromLong(posLong);
             int y = pos.getY() >> 4; // セクションY
             int sectionMinY = y * 16;
             int sectionMaxY = sectionMinY + 15;
@@ -100,7 +116,7 @@ public class TerrainOptimizationManager {
                     try {
                         int chunkX = pos.getX() >> 4;
                         int chunkZ = pos.getZ() >> 4;
-                        long chunkPosLong = net.minecraft.util.math.ChunkPos.toLong(chunkX, chunkZ);
+                        long chunkPosLong = ChunkPos.toLong(chunkX, chunkZ);
 
                         if (restoredChunks.contains(chunkPosLong)) {
                             it.remove(); // 処理済みとしてスキップ済みセットから削除
@@ -110,8 +126,8 @@ public class TerrainOptimizationManager {
                         // 強制的にチャンクを削除
                         if (world instanceof VSServerLevel) {
                             // VS2のキャッシュをフラッシュするために、地形を明示的に削除
-                            net.minecraft.world.chunk.Chunk chunk = world.getChunk(chunkX, chunkZ);
-                            List<org.valkyrienskies.core.apigame.world.chunks.TerrainUpdate> updates = new ArrayList<>();
+                            Chunk chunk = world.getChunk(chunkX, chunkZ);
+                            List<TerrainUpdate> updates = new ArrayList<>();
 
                             // すべてのセクションを反復処理し、削除更新を送信
                             int bottomSection = world.getBottomSectionCoord();
@@ -137,7 +153,7 @@ public class TerrainOptimizationManager {
                                 // セクションバージョン更新のためブロックを一時変更
                                 // スキップされたセクション内のブロックを特定し更新通知を発行
                                 for (int sY = 0; sY < chunk.getSectionArray().length; sY++) {
-                                    net.minecraft.world.chunk.ChunkSection section = chunk.getSectionArray()[sY];
+                                    ChunkSection section = chunk.getSectionArray()[sY];
                                     if (section == null || section.isEmpty())
                                         continue;
 
@@ -148,19 +164,19 @@ public class TerrainOptimizationManager {
                                     for (int lx = 0; lx < 16; lx++) {
                                         for (int lz = 0; lz < 16; lz++) {
                                             for (int ly = 0; ly < 16; ly++) {
-                                                net.minecraft.block.BlockState state = section.getBlockState(lx, ly,
+                                                BlockState state = section.getBlockState(lx, ly,
                                                         lz);
                                                 if (!state.isAir()) {
                                                     int bx = (chunkX << 4) + lx;
                                                     int by = (realSectionY << 4) + ly;
                                                     int bz = (chunkZ << 4) + lz;
-                                                    net.minecraft.util.math.BlockPos blockPos = new net.minecraft.util.math.BlockPos(
+                                                    BlockPos blockPos = new BlockPos(
                                                             bx, by, bz);
 
                                                     // ブロック更新イベントを発生（フラグ4: 再描画・近隣通知なし、変更のみ記録）
                                                     // 一瞬空気ブロックに置換して即時復元
                                                     world.setBlockState(blockPos,
-                                                            net.minecraft.block.Blocks.AIR.getDefaultState(), 4);
+                                                            Blocks.AIR.getDefaultState(), 4);
                                                     world.setBlockState(blockPos, state, 4);
                                                     dirtied = true;
                                                     break;
@@ -226,13 +242,13 @@ public class TerrainOptimizationManager {
         boolean foundTargets = false;
 
         // サーバー内の全プレイヤーを取得
-        List<net.minecraft.server.network.ServerPlayerEntity> allPlayers = world.getServer().getPlayerManager()
+        List<ServerPlayerEntity> allPlayers = world.getServer().getPlayerManager()
                 .getPlayerList();
 
-        for (net.minecraft.server.network.ServerPlayerEntity player : allPlayers) {
+        for (ServerPlayerEntity player : allPlayers) {
             foundTargets = true;
 
-            org.valkyrienskies.core.api.ships.Ship ship = org.valkyrienskies.mod.common.VSGameUtilsKt
+            Ship ship = VSGameUtilsKt
                     .getShipManagingPos(player.getServerWorld(), player.getBlockPos());
             double targetY;
 

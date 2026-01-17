@@ -1,6 +1,8 @@
 package celeste.skyjourney.mixin;
 
 import celeste.skyjourney.config.SkyJourneyConfig;
+import celeste.skyjourney.common.TerrainOptimizationManager;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.ChunkSection;
 import org.joml.Vector3ic;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,11 +26,11 @@ public class TerrainBakingOptimizationMixin {
         }
 
         // 船のチャンクを無視するチェック
-        if (Math.abs(chunkPos.x()) >= 30000000 || Math.abs(chunkPos.z()) >= 30000000) {
+        if (Math.abs(chunkPos.x()) >= 1250000 || Math.abs(chunkPos.z()) >= 1250000) {
             return;
         }
 
-        celeste.skyjourney.common.TerrainOptimizationManager.totalChunks++; // スキップ判定前の総数をカウント
+        TerrainOptimizationManager.totalChunks++; // スキップ判定前の総数をカウント
 
         int sectionY = chunkPos.y();
         int sectionMinY = sectionY * 16;
@@ -36,7 +38,7 @@ public class TerrainBakingOptimizationMixin {
 
         // 許可範囲リストとの交差判定を実行
         boolean isAllowed = false;
-        List<int[]> ranges = celeste.skyjourney.common.TerrainOptimizationManager.allowedRanges;
+        List<int[]> ranges = TerrainOptimizationManager.allowedRanges;
 
         // 範囲リスト空時は全スキップ（プレイヤー不在）
         if (ranges != null && !ranges.isEmpty()) {
@@ -51,22 +53,22 @@ public class TerrainBakingOptimizationMixin {
 
         // 範囲外のため処理をスキップ
         if (!isAllowed) {
-            celeste.skyjourney.common.TerrainOptimizationManager.skippedChunks++;
-            celeste.skyjourney.common.TerrainOptimizationManager.debugQueue
+            TerrainOptimizationManager.skippedChunks++;
+            TerrainOptimizationManager.debugQueue
                     .add(new int[] { chunkPos.x(), chunkPos.y(), chunkPos.z(), 0 }); // 0 = スキップ（赤）
 
             // 復元処理用にスキップ済み座標を追跡リストへ追加
             // セクション原点のBlockPosを保存
-            long posLong = net.minecraft.util.math.BlockPos.asLong(chunkPos.x() * 16, chunkPos.y() * 16,
+            long posLong = BlockPos.asLong(chunkPos.x() * 16, chunkPos.y() * 16,
                     chunkPos.z() * 16);
-            celeste.skyjourney.common.TerrainOptimizationManager.skippedSections.add(posLong);
+            TerrainOptimizationManager.skippedSections.add(posLong);
 
             TerrainUpdate empty = ValkyrienSkiesMod.getVsCore()
                     .newEmptyVoxelShapeUpdate(chunkPos.x(), chunkPos.y(), chunkPos.z(), true);
             cir.setReturnValue(empty);
         } else {
             // 1 = 処理対象（緑）
-            celeste.skyjourney.common.TerrainOptimizationManager.debugQueue
+            TerrainOptimizationManager.debugQueue
                     .add(new int[] { chunkPos.x(), chunkPos.y(), chunkPos.z(), 1 });
         }
     }

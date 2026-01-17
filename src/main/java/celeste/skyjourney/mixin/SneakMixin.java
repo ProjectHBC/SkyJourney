@@ -1,6 +1,6 @@
 package celeste.skyjourney.mixin;
 
-import celeste.skyjourney.feature.FeatureManager;
+import celeste.skyjourney.config.SkyJourneyConfig;
 import celeste.skyjourney.feature.sneak.SneakGroundFix;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -16,7 +16,7 @@ public abstract class SneakMixin {
      */
     @ModifyVariable(method = "move", at = @At("HEAD"), argsOnly = true)
     private Vec3d onMoveHead(Vec3d movement) {
-        if (!FeatureManager.isSneakFixEnabled())
+        if (!SkyJourneyConfig.enableSneakFix)
             return movement;
 
         Entity self = (Entity) (Object) this;

@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import celeste.skyjourney.config.SkyJourneyConfig;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class SkyjourneyClient implements ClientModInitializer {
@@ -48,6 +50,24 @@ public class SkyjourneyClient implements ClientModInitializer {
                             OptimizationDebugRenderer.addBox(u[0], u[1], u[2], u[3]);
                         }
                     });
+                });
+
+        ClientPlayNetworking.registerGlobalReceiver(PacketHandler.CONFIG_SYNC_ID,
+                (client, handler, buf, responseSender) -> {
+                    String json = buf.readString();
+                    client.execute(() -> {
+                        // シングルプレイ（ホスト）の場合は同期を無視し、ローカル設定を優先する
+                        if (!client.isInSingleplayer()) {
+                            SkyJourneyConfig.applyServerConfig(json);
+                            SkyJourneyMod.LOGGER.info("[SkyJourney] Applied server configuration.");
+                        }
+                    });
+                });
+
+        ClientPlayConnectionEvents.DISCONNECT
+                .register((handler, client) -> {
+                    SkyJourneyConfig.restoreLocalConfig();
+                    SkyJourneyMod.LOGGER.info("[SkyJourney] Restored local configuration.");
                 });
 
         HudRenderCallback.EVENT.register(new MemoryStatsHUD());

@@ -7,6 +7,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.shape.VoxelShape;
+
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,8 +33,18 @@ public class PlacementCollisionMixin {
         Ship ship = VSHelper.getShipManagingOrIntersecting(player);
 
         BlockPos placePos = context.getBlockPos();
-        Box blockBox = new Box(placePos);
-        Box worldPlayerBox = player.getBoundingBox();
+
+        // ブロックの衝突判定形状
+        VoxelShape shape = state.getCollisionShape(context.getWorld(), placePos);
+        if (shape.isEmpty()) {
+            return; // 衝突判定がないブロックは制限しない
+        }
+
+        // バウンディングボックスを取得
+        Box blockBox = shape.getBoundingBox().offset(placePos);
+
+        // プレイヤーのバウンディングボックス
+        Box worldPlayerBox = player.getBoundingBox().contract(0.01);
 
         boolean intersects = false;
 
@@ -67,7 +79,7 @@ public class PlacementCollisionMixin {
      */
     @Unique
     private boolean isShipyardCoord(Box box) {
-        return Math.abs(box.minX) > 1000000 || Math.abs(box.minZ) > 1000000;
+        return Math.abs(box.minX) > 20000000 || Math.abs(box.minZ) > 20000000;
     }
 
     // Ship

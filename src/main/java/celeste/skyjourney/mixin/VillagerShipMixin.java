@@ -2,7 +2,8 @@ package celeste.skyjourney.mixin;
 
 import celeste.skyjourney.common.GhostPOIManager;
 import celeste.skyjourney.common.VSHelper;
-import celeste.skyjourney.feature.FeatureManager;
+import celeste.skyjourney.config.SkyJourneyConfig;
+
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -10,8 +11,12 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
+import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
+import net.minecraft.village.VillagerData;
+import net.minecraft.village.VillagerProfession;
+import net.minecraft.registry.Registries;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,7 +41,7 @@ public class VillagerShipMixin {
 
     @Inject(method = "mobTick", at = @At("HEAD"))
     private void onMobTick(CallbackInfo ci) {
-        if (!FeatureManager.isVillagerFixEnabled())
+        if (!SkyJourneyConfig.enableVillagerFix)
             return;
 
         VillagerEntity entity = (VillagerEntity) (Object) this;
@@ -87,10 +92,10 @@ public class VillagerShipMixin {
             }
 
             boolean isLocked = entity.getExperience() > 0;
-            net.minecraft.village.VillagerProfession currentProf = entity.getVillagerData().getProfession();
+            VillagerProfession currentProf = entity.getVillagerData().getProfession();
 
             // 空きのある候補を取得
-            List<net.minecraft.world.poi.PointOfInterest> candidates = poiStorage.getInSquare(
+            List<PointOfInterest> candidates = poiStorage.getInSquare(
                     (type) -> true,
                     shipyardPos,
                     range,
@@ -158,7 +163,7 @@ public class VillagerShipMixin {
 
             // 最適なPOIを選択
             boolean success = false;
-            for (net.minecraft.world.poi.PointOfInterest bestPOI : candidates) {
+            for (PointOfInterest bestPOI : candidates) {
                 boolean isCurrent = bestPOI.getPos().equals(currentJobShipyardPos);
 
                 if (isCurrent) {
@@ -215,7 +220,7 @@ public class VillagerShipMixin {
             // セカンダリ（ベッド等）の注入
             if (brain.hasMemoryModule(MemoryModuleType.SECONDARY_JOB_SITE)) {
                 List<GlobalPos> secList = new ArrayList<>();
-                for (net.minecraft.world.poi.PointOfInterest poi : candidates) {
+                for (PointOfInterest poi : candidates) {
                     if (isLocked && !currentProf.heldWorkstation().test(poi.getType()))
                         continue;
 
@@ -290,8 +295,8 @@ public class VillagerShipMixin {
 
     @Unique
     private void ensureProfession(VillagerEntity entity, RegistryEntry<PointOfInterestType> poiType) {
-        if (entity.getVillagerData().getProfession() == net.minecraft.village.VillagerProfession.NONE) {
-            for (net.minecraft.village.VillagerProfession prof : net.minecraft.registry.Registries.VILLAGER_PROFESSION) {
+        if (entity.getVillagerData().getProfession() == VillagerProfession.NONE) {
+            for (VillagerProfession prof : Registries.VILLAGER_PROFESSION) {
                 if (prof.heldWorkstation().test(poiType)) {
                     entity.setVillagerData(entity.getVillagerData().withProfession(prof));
                     break;
@@ -301,21 +306,21 @@ public class VillagerShipMixin {
     }
 
     @Inject(method = "setVillagerData", at = @At("HEAD"), cancellable = true)
-    private void onSetVillagerData(net.minecraft.village.VillagerData data, CallbackInfo ci) {
-        if (!FeatureManager.isVillagerFixEnabled())
+    private void onSetVillagerData(VillagerData data, CallbackInfo ci) {
+        if (!SkyJourneyConfig.enableVillagerFix)
             return;
 
         VillagerEntity entity = (VillagerEntity) (Object) this;
 
         // ロック済み（XP > 0）: 職業を失ってはならない
-        if (entity.getExperience() > 0 && data.getProfession() == net.minecraft.village.VillagerProfession.NONE) {
+        if (entity.getExperience() > 0 && data.getProfession() == VillagerProfession.NONE) {
             ci.cancel();
             return;
         }
 
         // 船上: POIが見つかった場合、職業を保護
-        if (data.getProfession() == net.minecraft.village.VillagerProfession.NONE
-                && entity.getVillagerData().getProfession() != net.minecraft.village.VillagerProfession.NONE) {
+        if (data.getProfession() == VillagerProfession.NONE
+                && entity.getVillagerData().getProfession() != VillagerProfession.NONE) {
 
             if (skyjourney$foundShipPOI) {
                 ci.cancel();

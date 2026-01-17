@@ -50,4 +50,13 @@ public class PacketHandler {
             ServerPlayNetworking.send(player, CHUNK_DEBUG_ID, buf);
         }
     }
+
+    public static final Identifier CONFIG_SYNC_ID = new Identifier(SkyJourneyMod.MOD_ID, "config_sync");
+
+    // クライアントへサーバー設定を送信
+    public static void sendConfigSync(ServerPlayerEntity player, String jsonConfig) {
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeString(jsonConfig);
+        ServerPlayNetworking.send(player, CONFIG_SYNC_ID, buf);
+    }
 }

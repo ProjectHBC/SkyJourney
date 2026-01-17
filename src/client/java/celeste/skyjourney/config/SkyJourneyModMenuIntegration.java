@@ -18,33 +18,94 @@ public class SkyJourneyModMenuIntegration implements ModMenuApi {
 
                         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
+                        boolean isLocked = SkyJourneyConfig.isManagedByServer();
+                        Text tooltipSuffix = isLocked ? Text.of(" (Managed by Server - Cannot Edit)") : Text.of("");
+
                         ConfigCategory serverCategory = builder.getOrCreateCategory(Text.of("Server Settings"));
 
-                        serverCategory.addEntry(entryBuilder
+                        if (isLocked) {
+                                serverCategory.addEntry(entryBuilder
+                                                .startTextDescription(
+                                                                Text.of("These settings are enforced by the server."))
+                                                .build());
+                        }
+
+                        var terrainBakingEntry = entryBuilder
                                         .startBooleanToggle(Text.of("Enable Terrain Baking Optimization"),
                                                         SkyJourneyConfig.enableTerrainBakingOptimization)
                                         .setDefaultValue(true)
-                                        .setTooltip(Text
-                                                        .of("If enabled, terrain outside the configured Y range will be ignored by VS2 physics."))
-                                        .setSaveConsumer(
-                                                        newValue -> SkyJourneyConfig.enableTerrainBakingOptimization = newValue)
-                                        .build());
+                                        .setTooltip(Text.of(
+                                                        "If enabled, terrain outside the configured Y range will be ignored by VS2 physics.")
+                                                        .copy().append(tooltipSuffix))
+                                        .setSaveConsumer(newValue -> {
+                                                if (!isLocked)
+                                                        SkyJourneyConfig.enableTerrainBakingOptimization = newValue;
+                                        })
+                                        .build();
+                        if (isLocked)
+                                terrainBakingEntry.setEditable(false);
+                        serverCategory.addEntry(terrainBakingEntry);
 
-                        serverCategory.addEntry(entryBuilder
-                                        .startIntField(Text.of("Baking Y Buffer"), SkyJourneyConfig.bakingYBuffer)
+                        var bakingYEntry = entryBuilder
+                                        .startIntField(Text.of("Baking Y Buffer"),
+                                                        SkyJourneyConfig.bakingYBuffer)
                                         .setDefaultValue(32)
                                         .setTooltip(Text.of(
-                                                        "Distance (blocks) above/below ships to permit terrain baking."))
-                                        .setSaveConsumer(newValue -> SkyJourneyConfig.bakingYBuffer = newValue)
-                                        .build());
+                                                        "Distance (blocks) above/below ships to permit terrain baking.")
+                                                        .copy().append(tooltipSuffix))
+                                        .setSaveConsumer(newValue -> {
+                                                if (!isLocked)
+                                                        SkyJourneyConfig.bakingYBuffer = newValue;
+                                        })
+                                        .build();
+                        if (isLocked)
+                                bakingYEntry.setEditable(false);
+                        serverCategory.addEntry(bakingYEntry);
 
-                        serverCategory.addEntry(entryBuilder
+                        var sneakEntry = entryBuilder
+                                        .startBooleanToggle(Text.of("Enable Sneak Fix"),
+                                                        SkyJourneyConfig.enableSneakFix)
+                                        .setDefaultValue(true)
+                                        .setTooltip(Text.of("Prevents falling off inclined ships while sneaking.")
+                                                        .copy().append(tooltipSuffix))
+                                        .setSaveConsumer(newValue -> {
+                                                if (!isLocked)
+                                                        SkyJourneyConfig.enableSneakFix = newValue;
+                                        })
+                                        .build();
+                        if (isLocked)
+                                sneakEntry.setEditable(false);
+                        serverCategory.addEntry(sneakEntry);
+
+                        var villagerEntry = entryBuilder
+                                        .startBooleanToggle(Text.of("Enable Villager Fix"),
+                                                        SkyJourneyConfig.enableVillagerFix)
+                                        .setDefaultValue(true)
+                                        .setTooltip(Text.of("Allows villagers to work and restock on ships.").copy()
+                                                        .append(tooltipSuffix))
+                                        .setSaveConsumer(newValue -> {
+                                                if (!isLocked)
+                                                        SkyJourneyConfig.enableVillagerFix = newValue;
+                                        })
+                                        .build();
+                        if (isLocked)
+                                villagerEntry.setEditable(false);
+                        serverCategory.addEntry(villagerEntry);
+
+                        var memoryEntry = entryBuilder
                                         .startIntField(Text.of("Memory Poll Interval (Ticks)"),
                                                         SkyJourneyConfig.memoryPollInterval)
                                         .setDefaultValue(20)
-                                        .setTooltip(Text.of("How often to calculate and sync memory stats."))
-                                        .setSaveConsumer(newValue -> SkyJourneyConfig.memoryPollInterval = newValue)
-                                        .build());
+                                        .setTooltip(Text.of("How often to calculate and sync memory stats.").copy()
+                                                        .append(tooltipSuffix))
+                                        .setSaveConsumer(newValue -> {
+                                                if (!isLocked)
+                                                        SkyJourneyConfig.memoryPollInterval = newValue;
+                                        })
+                                        .build();
+                        if (isLocked)
+                                memoryEntry.setEditable(false);
+                        serverCategory.addEntry(memoryEntry);
 
                         ConfigCategory clientCategory = builder.getOrCreateCategory(Text.of("Client Settings"));
 
