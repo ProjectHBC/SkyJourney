@@ -24,10 +24,10 @@ ON
 *   **スニーク挙動の修正**: 船上や斜面でのスニーク時の挙動を改善。
 *   **ブロック設置判定の修正**: 船上で自分の位置にブロックをおける問題を修正。
 
-## 推奨環境 (Requirements)
+## 動作環境 (Requirements)
 *   Minecraft (Fabric)
 *   Fabric API
-*   Valkyrien Skies 2
+*   Valkyrien Skies 2 (2.3.0-beta.10)
 *   Cloth Config API (設定画面用)
 *   Mod Menu (設定画面へのアクセス用)
 
