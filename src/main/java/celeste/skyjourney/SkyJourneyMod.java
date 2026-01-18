@@ -20,6 +20,8 @@ public class SkyJourneyMod implements ModInitializer {
         FeatureManager.init();
 
         ServerTickEvents.START_WORLD_TICK.register(TerrainOptimizationManager::onWorldTick);
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents.CHUNK_LOAD
+                .register(TerrainOptimizationManager::onChunkLoad);
 
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             String json = celeste.skyjourney.config.SkyJourneyConfig.serialize();

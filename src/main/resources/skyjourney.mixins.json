@@ -13,7 +13,9 @@
     "PointOfInterestAccessor",
     "VillagerEntityAccessor",
     "ServerWorldMixin",
-    "PlacementCollisionMixin"
+    "PlacementCollisionMixin",
+    "WorldChunkMixin",
+    "ChunkSectionMixin"
   ],
   "injectors": {
     "defaultRequire": 1
