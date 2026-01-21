@@ -1,4 +1,3 @@
-set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-21.0.9.10-hotspot
 @rem
 @rem Copyright 2015 the original author or authors.
 @rem
