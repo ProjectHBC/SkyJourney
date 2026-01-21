@@ -17,8 +17,8 @@ public class ServerWorldMixin {
         if (self.getPointOfInterestStorage() instanceof WorldAwareStorage) {
             ((WorldAwareStorage) self.getPointOfInterestStorage()).skyjourney$setWorld(self);
             celeste.skyjourney.SkyJourneyMod.LOGGER
-                    .info("[ServerWorldMixin] Injected World reference into PointOfInterestStorage for "
-                            + self.getRegistryKey().getValue());
+                    .info("[ServerWorldMixin] Injected World reference into PointOfInterestStorage for {}",
+                            self.getRegistryKey().getValue());
         }
     }
 }

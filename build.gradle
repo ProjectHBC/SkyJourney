@@ -46,6 +46,11 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    maven { url "https://maven.shedaniel.me/" }
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 dependencies {
@@ -75,6 +80,10 @@ dependencies {
     modApi("maven.modrinth:eureka:${eureka_version}") {
         exclude group: "maven.modrinth", module: "valkyrien-skies"
     }
+    modApi("me.shedaniel.cloth:cloth-config-fabric:11.1.118") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {

@@ -7,6 +7,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
+import net.minecraft.util.math.Box;
+import net.minecraft.registry.RegistryKey;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
-
+import org.spongepowered.asm.mixin.Unique;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 
@@ -25,9 +27,10 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
     @Shadow
     public abstract Optional<RegistryEntry<PointOfInterestType>> getType(BlockPos pos);
 
+    @Unique
     private WeakReference<ServerWorld> skyjourney$worldRef;
 
-    // 再帰呼び出しによる無限ループ防止用のガード
+    @Unique
     private final ThreadLocal<Boolean> skyjourney$isRedirecting = ThreadLocal.withInitial(() -> false);
 
     @Override
@@ -45,7 +48,6 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
         if (skyjourney$isRedirecting.get())
             return;
 
-        // 検証: 既知のゴースト座標でのみリダイレクトを実行
         if (!GhostPOIManager.isValid(pos))
             return;
 
@@ -53,18 +55,15 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
         if (world == null)
             return;
 
-        // スレッドセーフ対策: VS2 API呼び出しはスレッドセーフではないため
-        // DistantHorizons等のMODがワーカースレッドからPOIを照会する場合に対処
-        if (world.getServer() != null && !world.getServer().isOnThread())
+        if (!world.getServer().isOnThread())
             return;
 
-        // 造船所チェックロジック:
+        // 造船所チェックロジック
         try {
-            net.minecraft.util.math.Box box = new net.minecraft.util.math.Box(pos).expand(0.5);
+            Box box = new Box(pos).expand(0.5);
             Iterable<Ship> ships = VSGameUtilsKt.getShipsIntersecting(world, box);
             for (Ship ship : ships) {
-                // このワールド座標に船を発見
-                // ワールド座標 -> 造船所座標に変換
+                // ワールド座標 -> 造船所座標
                 Vector3d localPos = new Vector3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
                 ship.getTransform().getWorldToShip().transformPosition(localPos);
                 BlockPos shipyardPos = new BlockPos((int) localPos.x, (int) localPos.y, (int) localPos.z);
@@ -80,21 +79,18 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
                     skyjourney$isRedirecting.set(false);
                 }
 
-                if (cir.getReturnValue() != null)
+                if (cir.isCancelled())
                     return;
             }
         } catch (Exception e) {
-            // ワールドクラッシュ回避のためエラーを無視
         }
     }
 
     @Inject(method = "hasTypeAt", at = @At("HEAD"), cancellable = true)
-    private void onHasTypeAt(net.minecraft.registry.RegistryKey<PointOfInterestType> type, BlockPos pos,
-                             CallbackInfoReturnable<Boolean> cir) {
+    private void onHasTypeAt(RegistryKey<PointOfInterestType> type, BlockPos pos,
+            CallbackInfoReturnable<Boolean> cir) {
         if (skyjourney$isRedirecting.get())
             return;
-
-        // 検証: 既知のゴースト座標でのみリダイレクトを実行
         if (!GhostPOIManager.isValid(pos))
             return;
 
@@ -102,11 +98,11 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
         if (world == null)
             return;
 
-        if (world.getServer() != null && !world.getServer().isOnThread())
+        if (!world.getServer().isOnThread())
             return;
 
         try {
-            net.minecraft.util.math.Box box = new net.minecraft.util.math.Box(pos).expand(0.5);
+            Box box = new Box(pos).expand(0.5);
             Iterable<Ship> ships = VSGameUtilsKt.getShipsIntersecting(world, box);
 
             for (Ship ship : ships) {
@@ -116,7 +112,6 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
 
                 skyjourney$isRedirecting.set(true);
                 try {
-                    // 実質的にローカルで hasTypeAt を呼び出し
                     boolean result = this.hasTypeAt(type, shipyardPos);
                     if (result) {
                         cir.setReturnValue(true);
@@ -131,5 +126,5 @@ public abstract class PointOfInterestStorageMixin implements WorldAwareStorage {
     }
 
     @Shadow
-    public abstract boolean hasTypeAt(net.minecraft.registry.RegistryKey<PointOfInterestType> type, BlockPos pos);
+    public abstract boolean hasTypeAt(RegistryKey<PointOfInterestType> type, BlockPos pos);
 }

@@ -10,6 +10,8 @@ import org.valkyrienskies.core.api.ships.QueryableShipData;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
+import net.minecraft.util.math.Box;
+
 public class VSHelper {
 
     /**
@@ -32,8 +34,6 @@ public class VSHelper {
 
     /**
      * 管理Shipが見つからない場合、エンティティと交差しているShipを探して返す。
-     * プレイヤーが Overworld 座標系にいながら、Ship Entity の上に乗っている場合などの
-     * 管理外状態での検出に使用
      *
      * @return 交差しているShip、見つからない場合はnull
      */
@@ -43,7 +43,7 @@ public class VSHelper {
             return ship;
 
         // プレイヤーの足元付近のバウンディングボックスで検索
-        net.minecraft.util.math.Box searchBox = entity.getBoundingBox().expand(0.5, 1.0, 0.5);
+        Box searchBox = entity.getBoundingBox().expand(0.5, 1.0, 0.5);
 
         // 最初に見つかったShipを返す
         Iterable<Ship> ships = VSGameUtilsKt.getShipsIntersecting(entity.getWorld(), searchBox);
