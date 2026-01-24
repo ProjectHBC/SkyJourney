@@ -46,7 +46,9 @@ public class MemoryStatsHUD implements HudRenderCallback {
         String memText = String.format("Server Mem: %d%% (%d/%d MB)", pct, used / 1024 / 1024, max / 1024 / 1024);
 
         String bakingText;
-        if (totalChunks > 0) {
+        if (!SkyJourneyConfig.enableTerrainBakingOptimization) {
+            bakingText = "Baking Opt: False";
+        } else if (totalChunks > 0) {
             int eff = (int) ((double) skippedChunks / totalChunks * 100);
             bakingText = String.format("Baking Opt: %d%% (Skip: %d / Total: %d)", eff, skippedChunks, totalChunks);
         } else {

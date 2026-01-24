@@ -39,6 +39,13 @@ repositories {
         name = "Valkyrien Skies"
         url = "https://maven.valkyrienskies.org"
     }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
     maven { url "https://maven.shedaniel.me/" }
     maven {
         name = "Terraformers"
@@ -52,6 +59,8 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:0.92.6+1.20.1"
+    // For Eureka
+    modImplementation "net.fabricmc:fabric-language-kotlin:1.10.10+kotlin.1.9.10"
 
     modApi("org.valkyrienskies:valkyrienskies-120-fabric:${vs2_version}") {
         exclude group: 'com.simibubi', module: ''
@@ -66,6 +75,10 @@ dependencies {
     }
     implementation("org.valkyrienskies.core:util:${vscore_version}") {
         exclude group: 'org.joml', module: ''
+    }
+
+    modApi("maven.modrinth:eureka:${eureka_version}") {
+        exclude group: "maven.modrinth", module: "valkyrien-skies"
     }
     modApi("me.shedaniel.cloth:cloth-config-fabric:11.1.118") {
         exclude group: "net.fabricmc.fabric-api"
@@ -131,4 +144,8 @@ publishing {
         // The repositories here will be used for publishing your artifact, not for
         // retrieving dependencies.
     }
+}
+
+if (file('local_dev.gradle').exists()) {
+    apply from: 'local_dev.gradle'
 }

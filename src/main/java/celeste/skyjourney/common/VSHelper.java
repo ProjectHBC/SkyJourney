@@ -1,7 +1,12 @@
 package celeste.skyjourney.common;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.valkyrienskies.core.api.ships.QueryableShipData;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
@@ -48,4 +53,16 @@ public class VSHelper {
         return null;
     }
 
+    /**
+     * 指定された World に存在するすべての Ship の slug を取得
+     * @return Ship の slug のリスト
+     */
+    public static List<String> getShipSlugList(World world) {
+        QueryableShipData<Ship> shipData = VSGameUtilsKt.getAllShips(world);
+        List<String> shipSlugList = new ArrayList<>();
+        for (Ship ship : shipData) {
+            shipSlugList.add(ship.getSlug());
+        }
+        return shipSlugList;
+    }
 }

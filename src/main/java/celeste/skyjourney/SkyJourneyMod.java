@@ -1,7 +1,10 @@
 package celeste.skyjourney;
 
+import celeste.skyjourney.command.SkyJourneyCommand;
 import celeste.skyjourney.feature.FeatureManager;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +21,7 @@ public class SkyJourneyMod implements ModInitializer {
         celeste.skyjourney.config.SkyJourneyConfig.load();
         LOGGER.info("[SkyJourney] Initializing modules...");
         FeatureManager.init();
+        CommandRegistrationCallback.EVENT.register(SkyJourneyCommand::register);
 
         ServerTickEvents.START_WORLD_TICK.register(TerrainOptimizationManager::onWorldTick);
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents.CHUNK_LOAD
@@ -26,6 +30,7 @@ public class SkyJourneyMod implements ModInitializer {
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             String json = celeste.skyjourney.config.SkyJourneyConfig.serialize();
             celeste.skyjourney.network.PacketHandler.sendConfigSync(handler.getPlayer(), json);
+            celeste.skyjourney.network.PacketHandler.sendMassSync(handler.getPlayer());
         });
 
         LOGGER.info("[SkyJourney] Initialization complete.");
