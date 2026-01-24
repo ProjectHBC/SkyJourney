@@ -145,3 +145,7 @@ publishing {
         // retrieving dependencies.
     }
 }
+
+if (file('local_dev.gradle').exists()) {
+    apply from: 'local_dev.gradle'
+}

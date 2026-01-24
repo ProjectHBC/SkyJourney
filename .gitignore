@@ -121,3 +121,6 @@ runs/
 
 # iruru-settings
 /.vscode/
+
+# Celeste Local Dev Config
+local_dev.gradle

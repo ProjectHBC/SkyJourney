@@ -7,7 +7,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 public class PacketHandler {
 
@@ -58,5 +60,42 @@ public class PacketHandler {
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeString(jsonConfig);
         ServerPlayNetworking.send(player, CONFIG_SYNC_ID, buf);
+    }
+    // ブロックの重さデータを同期するパケットID
+    public static final Identifier MASS_SYNC_ID = new Identifier(SkyJourneyMod.MOD_ID, "mass_sync");
+
+    // クライアントへサーバーの重さデータを送信
+    public static void sendMassSync(ServerPlayerEntity player) {
+        try {
+            // リフレクションを使用してMassDatapackResolver.INSTANCEを取得
+            Class<?> resolverClass = Class.forName("org.valkyrienskies.mod.common.config.MassDatapackResolver");
+            Field instanceField = resolverClass.getDeclaredField("INSTANCE");
+            Object resolverInstance = instanceField.get(null);
+
+            // 'map'重さデータを取得
+            Field mapField = resolverClass.getDeclaredField("map");
+            mapField.setAccessible(true);
+            Map<?, ?> map = (Map<?, ?>) mapField.get(resolverInstance);
+
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeInt(map.size());
+
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                Identifier id = (Identifier) entry.getKey();
+                Object info = entry.getValue();
+
+                // VSBlockStateInfoから'mass'フィールドを取得
+                Field massField = info.getClass().getDeclaredField("mass");
+                massField.setAccessible(true);
+                double mass = massField.getDouble(info);
+
+                buf.writeIdentifier(id);
+                buf.writeDouble(mass);
+            }
+
+            ServerPlayNetworking.send(player, MASS_SYNC_ID, buf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
