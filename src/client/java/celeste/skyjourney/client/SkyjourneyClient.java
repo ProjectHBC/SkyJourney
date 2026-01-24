@@ -55,7 +55,6 @@ public class SkyjourneyClient implements ClientModInitializer {
                         int status = buf.readInt();
                         updates.add(new int[] { x, y, z, status });
                     }
-                    SkyJourneyMod.LOGGER.info("[SkyJourney] Received Chunk Debug update with " + (count/4) + " entries.");
 
                     client.execute(() -> {
                         for (int[] u : updates) {
