@@ -2,10 +2,9 @@
   "required": true,
   "minVersion": "0.8",
   "package": "celeste.skyjourney.mixin.client",
-  "plugin": "celeste.skyjourney.mixin.plugin.SkyJourneyMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "drawer.AbstractDrawerBlockEntityRendererMixin"
+    "DrawerBlockEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

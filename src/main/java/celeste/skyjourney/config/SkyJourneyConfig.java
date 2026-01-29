@@ -18,6 +18,8 @@ public class SkyJourneyConfig {
     // 機能トグル
     public static boolean enableSneakFix = true;
     public static boolean enableVillagerFix = true;
+    public static boolean enableBalloonPPEFix = true;
+    public static boolean enableDrawerFix = false;
 
     // クライアント
     public static boolean showDebugHUD = false;
@@ -41,6 +43,8 @@ public class SkyJourneyConfig {
                 memoryPollInterval = data.memoryPollInterval;
                 enableSneakFix = data.enableSneakFix;
                 enableVillagerFix = data.enableVillagerFix;
+                enableBalloonPPEFix = data.enableBalloonPPEFix;
+                enableDrawerFix = data.enableDrawerFix;
                 // showDebugHUD is client-side only, so we don't sync it
 
                 managedByServer = true;
@@ -62,6 +66,8 @@ public class SkyJourneyConfig {
         data.memoryPollInterval = memoryPollInterval;
         data.enableSneakFix = enableSneakFix;
         data.enableVillagerFix = enableVillagerFix;
+        data.enableBalloonPPEFix = enableBalloonPPEFix;
+        data.enableDrawerFix = enableDrawerFix;
 
         data.showDebugHUD = showDebugHUD;
         return GSON.toJson(data);
@@ -74,6 +80,8 @@ public class SkyJourneyConfig {
         int memoryPollInterval = 20;
         boolean enableSneakFix = true;
         boolean enableVillagerFix = true;
+        boolean enableBalloonPPEFix = true;
+        boolean enableDrawerFix = false;
         boolean showDebugHUD = false;
     }
 
@@ -93,6 +101,8 @@ public class SkyJourneyConfig {
                         memoryPollInterval = data.memoryPollInterval;
                         enableSneakFix = data.enableSneakFix;
                         enableVillagerFix = data.enableVillagerFix;
+                        enableBalloonPPEFix = data.enableBalloonPPEFix;
+                        enableDrawerFix = data.enableDrawerFix;
                         showDebugHUD = data.showDebugHUD;
                         save();
                     }
@@ -116,6 +126,8 @@ public class SkyJourneyConfig {
             data.memoryPollInterval = memoryPollInterval;
             data.enableSneakFix = enableSneakFix;
             data.enableVillagerFix = enableVillagerFix;
+            data.enableBalloonPPEFix = enableBalloonPPEFix;
+            data.enableDrawerFix = enableDrawerFix;
             data.showDebugHUD = showDebugHUD;
 
             try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
