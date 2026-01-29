@@ -34,3 +34,12 @@ ON
 ## 免責  
 作者は、本Modの使用により生じた直接的または間接的な損害、損失、または不具合について、一切の責任を負いません。  
 本Modの利用はユーザー自身の責任において行ってください。
+
+
+## License
+
+This mod is licensed under the MIT License.
+
+This mod interacts with Valkyrien Skies 2, which is licensed under the GNU Lesser
+General Public License v3.0 (LGPL-3.0). Valkyrien Skies 2 is distributed separately
+and is not included in this project.

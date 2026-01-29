@@ -30,6 +30,7 @@ public class SkyJourneyMod implements ModInitializer {
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             String json = celeste.skyjourney.config.SkyJourneyConfig.serialize();
             celeste.skyjourney.network.PacketHandler.sendConfigSync(handler.getPlayer(), json);
+            celeste.skyjourney.network.PacketHandler.sendMassSync(handler.getPlayer());
         });
 
         LOGGER.info("[SkyJourney] Initialization complete.");

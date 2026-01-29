@@ -46,7 +46,7 @@ public class DataCommand {
         }
 
         double mass = ship.getInertiaData().getMass();
-        source.sendMessage(Text.literal(ship.getSlug() + " の質量: " + String.format("%.2f", mass) + " kg").formatted(Formatting.AQUA));
+        source.sendMessage(Text.literal(ship.getSlug() + " の質量: " + formatMass(mass)).formatted(Formatting.AQUA));
         return 1;
     }
 
@@ -69,7 +69,7 @@ public class DataCommand {
         double mass = ship.getInertiaData().getMass();
         double maxWeight = balloons * 5000;
         double weight = maxWeight - mass; // 船の総重量を調べる
-        source.sendMessage(Text.literal(ship.getSlug() + " : " + String.format("%.2f", weight) + " / " + String.format("%.2f", maxWeight) + " kg | 風船: " + balloons).formatted(Formatting.AQUA));
+        source.sendMessage(Text.literal(ship.getSlug() + " : " + formatMass(weight) + " / " + formatMass(maxWeight) + " | 風船: " + balloons).formatted(Formatting.AQUA));
         return 1;
     }
 
@@ -94,6 +94,12 @@ public class DataCommand {
         }
 
         return balloons;
+    }
+
+    // kg -> t
+    private static String formatMass(double massKg) {
+        double massTons = massKg / 1000.0;
+        return String.format("%,.2f t", massTons);
     }
 
     @Nullable

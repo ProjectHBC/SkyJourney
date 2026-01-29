@@ -119,5 +119,8 @@ runs/
 !gradle-wrapper.jar
 /gradle/
 
-# iruru-settings
+# iruru1111 Local Dev Config
 /.vscode/
+
+# Celeste Local Dev Config
+local_dev.gradle
