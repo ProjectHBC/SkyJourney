@@ -2,6 +2,8 @@ package celeste.skyjourney.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+
+import celeste.skyjourney.mixin.plugin.SkyJourneyPluginState;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -19,6 +21,7 @@ public class SkyJourneyModMenuIntegration implements ModMenuApi {
                         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
                         boolean isLocked = SkyJourneyConfig.isManagedByServer();
+                        boolean isExtendedDrawersLocked = !SkyJourneyPluginState.getExtendedDrawersLoaded();
                         Text tooltipSuffix = isLocked ? Text.of(" (Managed by Server - Cannot Edit)") : Text.of("");
 
                         ConfigCategory serverCategory = builder.getOrCreateCategory(Text.of("Server Settings"));
@@ -91,6 +94,36 @@ public class SkyJourneyModMenuIntegration implements ModMenuApi {
                         if (isLocked)
                                 villagerEntry.setEditable(false);
                         serverCategory.addEntry(villagerEntry);
+
+                        var balloonPPEEntry = entryBuilder
+                                        .startBooleanToggle(Text.of("Enable Balloon PersistentProjectileEntity Fix"),
+                                                        SkyJourneyConfig.enableBalloonPPEFix)
+                                        .setDefaultValue(true)
+                                        .setTooltip(Text.of("Prevents balloons from being broken by projectiles (e.g., arrows, tridents).").copy()
+                                                        .append(tooltipSuffix))
+                                        .setSaveConsumer(newValue -> {
+                                                if (!isLocked)
+                                                        SkyJourneyConfig.enableBalloonPPEFix = newValue;
+                                        })
+                                        .build();
+                        if (isLocked)
+                                balloonPPEEntry.setEditable(false);
+                        serverCategory.addEntry(balloonPPEEntry);
+
+                        var drawerFixEntry = entryBuilder
+                                        .startBooleanToggle(Text.of("Enable Extended Drawers Fix"),
+                                                        SkyJourneyConfig.enableDrawerFix)
+                                        .setDefaultValue(false)
+                                        .setTooltip(Text.of("Patches Extended Drawers to work correctly on ships.").copy()
+                                                        .append(tooltipSuffix))
+                                        .setSaveConsumer(newValue -> {
+                                                if (!isLocked || !isExtendedDrawersLocked)
+                                                        SkyJourneyConfig.enableDrawerFix = newValue;
+                                        })
+                                        .build();
+                        if (isLocked || isExtendedDrawersLocked)
+                                drawerFixEntry.setEditable(false);
+                        serverCategory.addEntry(drawerFixEntry);
 
                         var memoryEntry = entryBuilder
                                         .startIntField(Text.of("Memory Poll Interval (Ticks)"),

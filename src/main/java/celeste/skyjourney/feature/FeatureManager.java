@@ -1,6 +1,8 @@
 package celeste.skyjourney.feature;
 
 import celeste.skyjourney.SkyJourneyMod;
+import celeste.skyjourney.mixin.plugin.SkyJourneyPluginState;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
@@ -20,6 +22,7 @@ public class FeatureManager {
 
     public static void init() {
         loadConfig();
+        SkyJourneyPluginState.checkPlugin(config);
 
         if (config.enableSneakFix) {
             SkyJourneyMod.LOGGER.info("Feature: SneakGroundFix [ENABLED]");
@@ -31,6 +34,12 @@ public class FeatureManager {
             SkyJourneyMod.LOGGER.info("Feature: VillagerShipFix [ENABLED]");
         } else {
             SkyJourneyMod.LOGGER.info("Feature: VillagerShipFix [DISABLED]");
+        }
+
+        if (config.enableDrawerFix) {
+            SkyJourneyMod.LOGGER.info("Feature: DrawerInteractionFix [ENABLED]");
+        } else {
+            SkyJourneyMod.LOGGER.info("Feature: DrawerInteractionFix [DISABLED]");
         }
     }
 
@@ -66,8 +75,13 @@ public class FeatureManager {
         return config.enableVillagerFix;
     }
 
+    public static boolean isDrawerFixEnabled() {
+        return config.enableDrawerFix;
+    }
+
     public static class Config {
         public boolean enableSneakFix = true;
         public boolean enableVillagerFix = true;
+        public boolean enableDrawerFix = false;
     }
 }

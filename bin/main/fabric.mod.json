@@ -3,10 +3,10 @@
   "id": "skyjourney",
   "version": "${version}",
   "name": "SkyJourney",
-  "description": "A versatile Quality of Life addon for Valkyrien Skies 2. Designed to stabilize and improve experience.",
-  "authors": ["Celeste", "iruru1111"],
+  "description": "空を旅してこ～",
+  "authors": ["Celeste"],
   "contact": {},
-  "license": "MIT",
+  "license": "LGPL-3.0",
   "icon": "assets/skyjourney/icon.png",
   "environment": "*",
   "entrypoints": {
