@@ -30,7 +30,7 @@ public class DrawerInteractionMixin {
         )
     )
     private BlockHitResult fixRaycastCoordinates(PlayerEntity player, BlockPos pos) {
-        if (!SkyJourneyConfig.enableDrawerFix) { return DrawerRaycastUtil.getTarget(player, pos); }
+        if (!SkyJourneyConfig.getInstance().enableDrawerFix) { return DrawerRaycastUtil.getTarget(player, pos); }
 
         // 通常のレイキャストを行う
         HitResult hit = player.raycast(5.0d, 0.0f, false);

@@ -2,6 +2,8 @@ package celeste.skyjourney.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import celeste.skyjourney.mixin.plugin.SkyJourneyPluginState;
 import net.fabricmc.loader.api.FabricLoader;
 import java.io.Reader;
 import java.io.Writer;
@@ -9,45 +11,48 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class SkyJourneyConfig {
-
     // サーバー
-    public static boolean enableTerrainBakingOptimization = true;
-    public static int bakingYBuffer = 32;
-    public static int memoryPollInterval = 20;
+    public boolean enableTerrainBakingOptimization = true;
+    public int bakingYBuffer = 32;
+    public int memoryPollInterval = 20;
 
     // 機能トグル
-    public static boolean enableSneakFix = true;
-    public static boolean enableVillagerFix = true;
-    public static boolean enableBalloonPPEFix = true;
-    public static boolean enableDrawerFix = false;
+    public boolean enableSneakFix = true;
+    public boolean enableVillagerFix = true;
+    public boolean enableBalloonPPEFix = true;
+    public boolean enableDrawerFix = false;
 
     // クライアント
-    public static boolean showDebugHUD = false;
+    public boolean showDebugHUD = false;
 
     // サーバー管理フラグ
-    private static boolean managedByServer = false;
+    private transient boolean managedByServer = false;
 
-    public static boolean isManagedByServer() {
-        return managedByServer;
-    }
-
+    // --- システム部分 ---
     private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("skyjourney.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    // Singleton
+    private SkyJourneyConfig() {}
+    private static SkyJourneyConfig instance = new SkyJourneyConfig();
+
+    // 外部アクセス
+    public static SkyJourneyConfig getInstance() { return instance; }
+    public boolean isManagedByServer() { return managedByServer; }
+
+    // サーバー設定を適用
     public static void applyServerConfig(String json) {
         try {
-            ConfigData data = GSON.fromJson(json, ConfigData.class);
+            SkyJourneyConfig data = GSON.fromJson(json, SkyJourneyConfig.class);
             if (data != null) {
-                enableTerrainBakingOptimization = data.enableTerrainBakingOptimization;
-                bakingYBuffer = data.bakingYBuffer;
-                memoryPollInterval = data.memoryPollInterval;
-                enableSneakFix = data.enableSneakFix;
-                enableVillagerFix = data.enableVillagerFix;
-                enableBalloonPPEFix = data.enableBalloonPPEFix;
-                enableDrawerFix = data.enableDrawerFix;
-                // showDebugHUD is client-side only, so we don't sync it
+                data.managedByServer = true;
+                data.validate();
 
-                managedByServer = true;
+                // クライアント設定は同期しない
+                data.showDebugHUD = instance.showDebugHUD;
+
+                // それ以外を同期させる
+                instance = data;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,56 +60,22 @@ public class SkyJourneyConfig {
     }
 
     public static void restoreLocalConfig() {
-        managedByServer = false;
+        instance.managedByServer = false;
         load();
     }
 
     public static String serialize() {
-        ConfigData data = new ConfigData();
-        data.enableTerrainBakingOptimization = enableTerrainBakingOptimization;
-        data.bakingYBuffer = bakingYBuffer;
-        data.memoryPollInterval = memoryPollInterval;
-        data.enableSneakFix = enableSneakFix;
-        data.enableVillagerFix = enableVillagerFix;
-        data.enableBalloonPPEFix = enableBalloonPPEFix;
-        data.enableDrawerFix = enableDrawerFix;
-
-        data.showDebugHUD = showDebugHUD;
-        return GSON.toJson(data);
-    }
-
-    // 設定データを保持する内部クラス
-    private static class ConfigData {
-        boolean enableTerrainBakingOptimization = true;
-        int bakingYBuffer = 32;
-        int memoryPollInterval = 20;
-        boolean enableSneakFix = true;
-        boolean enableVillagerFix = true;
-        boolean enableBalloonPPEFix = true;
-        boolean enableDrawerFix = false;
-        boolean showDebugHUD = false;
+        return GSON.toJson(instance);
     }
 
     public static void load() {
         try {
             if (Files.exists(CONFIG_PATH)) {
                 try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
-                    ConfigData data = GSON.fromJson(reader, ConfigData.class);
-                    if (data != null) {
-                        if (data.bakingYBuffer < 0)
-                            data.bakingYBuffer = 32;
-                        if (data.memoryPollInterval <= 0)
-                            data.memoryPollInterval = 20;
-
-                        enableTerrainBakingOptimization = data.enableTerrainBakingOptimization;
-                        bakingYBuffer = data.bakingYBuffer;
-                        memoryPollInterval = data.memoryPollInterval;
-                        enableSneakFix = data.enableSneakFix;
-                        enableVillagerFix = data.enableVillagerFix;
-                        enableBalloonPPEFix = data.enableBalloonPPEFix;
-                        enableDrawerFix = data.enableDrawerFix;
-                        showDebugHUD = data.showDebugHUD;
-                        save();
+                    SkyJourneyConfig loaded = GSON.fromJson(reader, SkyJourneyConfig.class);
+                    if (loaded != null) {
+                        loaded.validate();
+                        instance = loaded;
                     }
                 }
             } else {
@@ -116,25 +87,22 @@ public class SkyJourneyConfig {
     }
 
     public static void save() {
-        if (managedByServer)
-            return; // サーバー管理中はローカル保存しない
+        if (instance.managedByServer) { return; } // サーバー管理中はローカル保存しない
 
         try {
-            ConfigData data = new ConfigData();
-            data.enableTerrainBakingOptimization = enableTerrainBakingOptimization;
-            data.bakingYBuffer = bakingYBuffer;
-            data.memoryPollInterval = memoryPollInterval;
-            data.enableSneakFix = enableSneakFix;
-            data.enableVillagerFix = enableVillagerFix;
-            data.enableBalloonPPEFix = enableBalloonPPEFix;
-            data.enableDrawerFix = enableDrawerFix;
-            data.showDebugHUD = showDebugHUD;
-
+            instance.validate();
             try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
-                GSON.toJson(data, writer);
+                GSON.toJson(instance, writer);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // 整合性チェック
+    private void validate() {
+        if (bakingYBuffer < 0) { bakingYBuffer = 32; }
+        if (memoryPollInterval <= 0) { memoryPollInterval = 20; }
+        SkyJourneyPluginState.validatePlugin();
     }
 }

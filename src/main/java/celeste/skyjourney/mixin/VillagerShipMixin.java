@@ -41,7 +41,7 @@ public class VillagerShipMixin {
 
     @Inject(method = "mobTick", at = @At("HEAD"))
     private void onMobTick(CallbackInfo ci) {
-        if (!SkyJourneyConfig.enableVillagerFix)
+        if (!SkyJourneyConfig.getInstance().enableVillagerFix)
             return;
 
         VillagerEntity entity = (VillagerEntity) (Object) this;
@@ -307,7 +307,7 @@ public class VillagerShipMixin {
 
     @Inject(method = "setVillagerData", at = @At("HEAD"), cancellable = true)
     private void onSetVillagerData(VillagerData data, CallbackInfo ci) {
-        if (!SkyJourneyConfig.enableVillagerFix)
+        if (!SkyJourneyConfig.getInstance().enableVillagerFix)
             return;
 
         VillagerEntity entity = (VillagerEntity) (Object) this;

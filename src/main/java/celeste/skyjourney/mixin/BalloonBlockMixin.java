@@ -17,7 +17,7 @@ import celeste.skyjourney.config.SkyJourneyConfig;
 public class BalloonBlockMixin {
     @Inject(method = "onProjectileHit", at = @At("HEAD"), cancellable = true)
     private void preventBalloonPop(World world, BlockState state, BlockHitResult hit, ProjectileEntity projectile, CallbackInfo ci) {
-        if (!SkyJourneyConfig.enableBalloonPPEFix) { return; }
+        if (!SkyJourneyConfig.getInstance().enableBalloonPPEFix) { return; }
         
         // PersistentProjectileEntity系(矢やトライデントなど)が当たった場合は割れないようにする
         if (projectile instanceof PersistentProjectileEntity) {

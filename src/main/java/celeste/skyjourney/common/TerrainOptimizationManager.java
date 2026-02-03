@@ -61,7 +61,7 @@ public class TerrainOptimizationManager {
             return;
 
         // メモリ監視と範囲計算の実行
-        if (world.getTime() % SkyJourneyConfig.memoryPollInterval == 0) {
+        if (world.getTime() % SkyJourneyConfig.getInstance().memoryPollInterval == 0) {
             runMemoryPoll(world);
         } else {
             // プレイヤー移動への追従性を確保するため、範囲計算は毎ティック行う
@@ -292,7 +292,7 @@ public class TerrainOptimizationManager {
                 targetY = player.getY();
             }
 
-            int buffer = SkyJourneyConfig.bakingYBuffer;
+            int buffer = SkyJourneyConfig.getInstance().bakingYBuffer;
             int rangeMin = (int) targetY - buffer;
             int rangeMax = (int) targetY + buffer;
             newRanges.add(new int[] { rangeMin, rangeMax });

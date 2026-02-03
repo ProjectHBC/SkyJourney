@@ -24,7 +24,7 @@ public class TerrainBakingOptimizationMixin {
     private static void onToDenseVoxelUpdate(ChunkSection section, Vector3ic chunkPos,
             CallbackInfoReturnable<TerrainUpdate> cir) {
 
-        if (!SkyJourneyConfig.enableTerrainBakingOptimization) {
+        if (!SkyJourneyConfig.getInstance().enableTerrainBakingOptimization) {
             return;
         }
 
