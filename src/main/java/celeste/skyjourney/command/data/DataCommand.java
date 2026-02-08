@@ -26,12 +26,12 @@ public class DataCommand {
                 .then(CommandManager.literal("get")
                         .then(CommandManager.literal("ship_mass")
                                 .executes(DataCommand::getShipMass)
-                                .then(CommandManager.argument("slug", StringArgumentType.greedyString())
+                                .then(CommandManager.argument("slug", StringArgumentType.string())
                                         .suggests(SkyJourneyCommand::suggestShipSlug)
                                         .executes(DataCommand::getShipMass)))
                         .then(CommandManager.literal("weight")
                                 .executes(DataCommand::getWeight)
-                                .then(CommandManager.argument("slug", StringArgumentType.greedyString())
+                                .then(CommandManager.argument("slug", StringArgumentType.string())
                                         .suggests(SkyJourneyCommand::suggestShipSlug)
                                         .executes(DataCommand::getWeight))));
     }
