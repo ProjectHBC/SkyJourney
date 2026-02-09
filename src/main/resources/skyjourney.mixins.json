@@ -18,7 +18,8 @@
     "WorldChunkMixin",
     "ChunkSectionMixin",
     "BalloonBlockMixin",
-    "drawer.DrawerInteractionMixin"
+    "drawer.DrawerInteractionMixin",
+    "EatGrassGoalMixin"
   ],
   "injectors": {
     "defaultRequire": 1
