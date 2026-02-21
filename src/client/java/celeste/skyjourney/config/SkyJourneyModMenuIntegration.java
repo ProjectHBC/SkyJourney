@@ -10,150 +10,101 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.text.Text;
 
 public class SkyJourneyModMenuIntegration implements ModMenuApi {
-        @Override
-        public ConfigScreenFactory<?> getModConfigScreenFactory() {
-                return parent -> {
-                        ConfigBuilder builder = ConfigBuilder.create()
-                                        .setParentScreen(parent)
-                                        .setTitle(Text.of("SkyJourney Config"))
-                                        .setSavingRunnable(SkyJourneyConfig::save);
+    @Override
+    public ConfigScreenFactory<?> getModConfigScreenFactory() {
+        return parent -> {
+            ConfigBuilder builder = ConfigBuilder
+                .create()
+                .setParentScreen(parent)
+                .setTitle(Text.of("SkyJourney Config"))
+                .setSavingRunnable(SkyJourneyConfig::save);
 
-                        ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+            ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-                        boolean isLocked = SkyJourneyConfig.isManagedByServer();
-                        boolean isExtendedDrawersLocked = !SkyJourneyPluginState.getExtendedDrawersLoaded();
-                        Text tooltipSuffix = isLocked ? Text.of(" (Managed by Server - Cannot Edit)") : Text.of("");
+            boolean isLocked = SkyJourneyConfig.getInstance().isManagedByServer();
+            boolean isExtendedDrawersLocked = !SkyJourneyPluginState.getExtendedDrawersLoaded();
+            Text tooltipSuffix = isLocked ? Text.of(" (Managed by Server - Cannot Edit)") : Text.of("");
 
-                        ConfigCategory serverCategory = builder.getOrCreateCategory(Text.of("Server Settings"));
+            ConfigCategory serverCategory = builder.getOrCreateCategory(Text.of("Server Settings"));
 
-                        if (isLocked) {
-                                serverCategory.addEntry(entryBuilder
-                                                .startTextDescription(
-                                                                Text.of("These settings are enforced by the server."))
-                                                .build());
-                        }
+            if (isLocked) { serverCategory.addEntry(entryBuilder.startTextDescription(Text.of("These settings are enforced by the server.")).build()); }
 
-                        var terrainBakingEntry = entryBuilder
-                                        .startBooleanToggle(Text.of("Enable Terrain Baking Optimization"),
-                                                        SkyJourneyConfig.enableTerrainBakingOptimization)
-                                        .setDefaultValue(true)
-                                        .setTooltip(Text.of(
-                                                        "If enabled, terrain outside the configured Y range will be ignored by VS2 physics.")
-                                                        .copy().append(tooltipSuffix))
-                                        .setSaveConsumer(newValue -> {
-                                                if (!isLocked)
-                                                        SkyJourneyConfig.enableTerrainBakingOptimization = newValue;
-                                        })
-                                        .build();
-                        if (isLocked)
-                                terrainBakingEntry.setEditable(false);
-                        serverCategory.addEntry(terrainBakingEntry);
+            // --- サーバーコンフィグ設定領域 ---
+            var terrainBakingEntry = entryBuilder
+                .startBooleanToggle(Text.of("Enable Terrain Baking Optimization"), SkyJourneyConfig.getInstance().enableTerrainBakingOptimization)
+                .setDefaultValue(true)
+                .setTooltip(Text.of("If enabled, terrain outside the configured Y range will be ignored by VS2 physics.").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked) { SkyJourneyConfig.getInstance().enableTerrainBakingOptimization = newValue; }})
+                .build();
+            if (isLocked) { terrainBakingEntry.setEditable(false); }
+            serverCategory.addEntry(terrainBakingEntry);
 
-                        var bakingYEntry = entryBuilder
-                                        .startIntField(Text.of("Baking Y Buffer"),
-                                                        SkyJourneyConfig.bakingYBuffer)
-                                        .setDefaultValue(32)
-                                        .setTooltip(Text.of(
-                                                        "Distance (blocks) above/below ships to permit terrain baking.")
-                                                        .copy().append(tooltipSuffix))
-                                        .setSaveConsumer(newValue -> {
-                                                if (!isLocked)
-                                                        SkyJourneyConfig.bakingYBuffer = newValue;
-                                        })
-                                        .build();
-                        if (isLocked)
-                                bakingYEntry.setEditable(false);
-                        serverCategory.addEntry(bakingYEntry);
+            var bakingYEntry = entryBuilder
+                .startIntField(Text.of("Baking Y Buffer"), SkyJourneyConfig.getInstance().bakingYBuffer)
+                .setDefaultValue(32)
+                .setTooltip(Text.of("Distance (blocks) above/below ships to permit terrain baking.").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked) { SkyJourneyConfig.getInstance().bakingYBuffer = newValue; }})
+                .build();
+            if (isLocked) { bakingYEntry.setEditable(false); }
+            serverCategory.addEntry(bakingYEntry);
 
-                        var sneakEntry = entryBuilder
-                                        .startBooleanToggle(Text.of("Enable Sneak Fix"),
-                                                        SkyJourneyConfig.enableSneakFix)
-                                        .setDefaultValue(true)
-                                        .setTooltip(Text.of("Prevents falling off inclined ships while sneaking.")
-                                                        .copy().append(tooltipSuffix))
-                                        .setSaveConsumer(newValue -> {
-                                                if (!isLocked)
-                                                        SkyJourneyConfig.enableSneakFix = newValue;
-                                        })
-                                        .build();
-                        if (isLocked)
-                                sneakEntry.setEditable(false);
-                        serverCategory.addEntry(sneakEntry);
+            var sneakEntry = entryBuilder
+                .startBooleanToggle(Text.of("Enable Sneak Fix"), SkyJourneyConfig.getInstance().enableSneakFix)
+                .setDefaultValue(true)
+                .setTooltip(Text.of("Prevents falling off inclined ships while sneaking.").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked) { SkyJourneyConfig.getInstance().enableSneakFix = newValue; }})
+                .build();
+            if (isLocked) { sneakEntry.setEditable(false); }
+            serverCategory.addEntry(sneakEntry);
 
-                        var villagerEntry = entryBuilder
-                                        .startBooleanToggle(Text.of("Enable Villager Fix"),
-                                                        SkyJourneyConfig.enableVillagerFix)
-                                        .setDefaultValue(true)
-                                        .setTooltip(Text.of("Allows villagers to work and restock on ships.").copy()
-                                                        .append(tooltipSuffix))
-                                        .setSaveConsumer(newValue -> {
-                                                if (!isLocked)
-                                                        SkyJourneyConfig.enableVillagerFix = newValue;
-                                        })
-                                        .build();
-                        if (isLocked)
-                                villagerEntry.setEditable(false);
-                        serverCategory.addEntry(villagerEntry);
+            var villagerEntry = entryBuilder
+                .startBooleanToggle(Text.of("Enable Villager Fix"), SkyJourneyConfig.getInstance().enableVillagerFix)
+                .setDefaultValue(true)
+                .setTooltip(Text.of("Allows villagers to work and restock on ships.").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked) { SkyJourneyConfig.getInstance().enableVillagerFix = newValue; }})
+                .build();
+            if (isLocked) { villagerEntry.setEditable(false); }
+            serverCategory.addEntry(villagerEntry);
 
-                        var balloonPPEEntry = entryBuilder
-                                        .startBooleanToggle(Text.of("Enable Balloon PersistentProjectileEntity Fix"),
-                                                        SkyJourneyConfig.enableBalloonPPEFix)
-                                        .setDefaultValue(true)
-                                        .setTooltip(Text.of("Prevents balloons from being broken by projectiles (e.g., arrows, tridents).").copy()
-                                                        .append(tooltipSuffix))
-                                        .setSaveConsumer(newValue -> {
-                                                if (!isLocked)
-                                                        SkyJourneyConfig.enableBalloonPPEFix = newValue;
-                                        })
-                                        .build();
-                        if (isLocked)
-                                balloonPPEEntry.setEditable(false);
-                        serverCategory.addEntry(balloonPPEEntry);
+            var balloonPPEEntry = entryBuilder
+                .startBooleanToggle(Text.of("Enable Balloon PersistentProjectileEntity Fix"), SkyJourneyConfig.getInstance().enableBalloonPPEFix)
+                .setDefaultValue(true)
+                .setTooltip(Text.of("Prevents balloons from being broken by projectiles (e.g., arrows, tridents).").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked) { SkyJourneyConfig.getInstance().enableBalloonPPEFix = newValue; }})
+                .build();
+            if (isLocked) { balloonPPEEntry.setEditable(false); }
+            serverCategory.addEntry(balloonPPEEntry);
 
-                        var drawerFixEntry = entryBuilder
-                                        .startBooleanToggle(Text.of("Enable Extended Drawers Fix"),
-                                                        SkyJourneyConfig.enableDrawerFix)
-                                        .setDefaultValue(false)
-                                        .setTooltip(Text.of("Patches Extended Drawers to work correctly on ships.").copy()
-                                                        .append(tooltipSuffix))
-                                        .setSaveConsumer(newValue -> {
-                                                if (!isLocked || !isExtendedDrawersLocked)
-                                                        SkyJourneyConfig.enableDrawerFix = newValue;
-                                        })
-                                        .build();
-                        if (isLocked || isExtendedDrawersLocked)
-                                drawerFixEntry.setEditable(false);
-                        serverCategory.addEntry(drawerFixEntry);
+            var drawerFixEntry = entryBuilder
+                .startBooleanToggle(Text.of("Enable Extended Drawers Fix"), SkyJourneyConfig.getInstance().enableDrawerFix)
+                .setDefaultValue(false)
+                .setTooltip(Text.of("Patches Extended Drawers to work correctly on ships.").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked || !isExtendedDrawersLocked) { SkyJourneyConfig.getInstance().enableDrawerFix = newValue; }})
+                .build();
+            if (isLocked || isExtendedDrawersLocked) { drawerFixEntry.setEditable(false); }
+            serverCategory.addEntry(drawerFixEntry);
 
-                        var memoryEntry = entryBuilder
-                                        .startIntField(Text.of("Memory Poll Interval (Ticks)"),
-                                                        SkyJourneyConfig.memoryPollInterval)
-                                        .setDefaultValue(20)
-                                        .setTooltip(Text.of("How often to calculate and sync memory stats.").copy()
-                                                        .append(tooltipSuffix))
-                                        .setSaveConsumer(newValue -> {
-                                                if (!isLocked)
-                                                        SkyJourneyConfig.memoryPollInterval = newValue;
-                                        })
-                                        .build();
-                        if (isLocked)
-                                memoryEntry.setEditable(false);
-                        serverCategory.addEntry(memoryEntry);
+            var memoryEntry = entryBuilder
+                .startIntField(Text.of("Memory Poll Interval (Ticks)"), SkyJourneyConfig.getInstance().memoryPollInterval)
+                .setDefaultValue(20)
+                .setTooltip(Text.of("How often to calculate and sync memory stats.").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked) { SkyJourneyConfig.getInstance().memoryPollInterval = newValue; }})
+                .build();
+            if (isLocked) { memoryEntry.setEditable(false); }
+            serverCategory.addEntry(memoryEntry);
 
-                        ConfigCategory clientCategory = builder.getOrCreateCategory(Text.of("Client Settings"));
+			// --- クライアント設定領域 ---
+			ConfigCategory clientCategory = builder.getOrCreateCategory(Text.of("Client Settings"));
 
-                        clientCategory
-                                        .addEntry(entryBuilder
-                                                        .startBooleanToggle(Text.of("Show Debug HUD"),
-                                                                        SkyJourneyConfig.showDebugHUD)
-                                                        .setDefaultValue(false)
-                                                        .setTooltip(Text.of(
-                                                                        "Displays memory usage and optimization stats on screen."))
-                                                        .setSaveConsumer(
-                                                                        newValue -> SkyJourneyConfig.showDebugHUD = newValue)
-                                                        .build());
+			var showDebugHUDEntry = entryBuilder
+				.startBooleanToggle(Text.of("Show Debug HUD"), SkyJourneyConfig.getInstance().showDebugHUD)
+				.setDefaultValue(false)
+				.setTooltip(Text.of("Displays memory usage and optimization stats on screen."))
+				.setSaveConsumer(newValue -> SkyJourneyConfig.getInstance().showDebugHUD = newValue)
+				.build();
+			clientCategory.addEntry(showDebugHUDEntry);
 
-                        return builder.build();
-                };
-        }
+			return builder.build();
+		};
+	}
 }

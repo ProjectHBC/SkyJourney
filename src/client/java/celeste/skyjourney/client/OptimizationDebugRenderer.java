@@ -37,7 +37,7 @@ public class OptimizationDebugRenderer {
     }
 
     public static void render(WorldRenderContext context) {
-        if (!celeste.skyjourney.config.SkyJourneyConfig.showDebugHUD) {
+        if (!celeste.skyjourney.config.SkyJourneyConfig.getInstance().showDebugHUD) {
             return;
         }
 

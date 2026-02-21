@@ -23,9 +23,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 
 public class SkyJourneyCommand {
-    /**
-     * skyjourney用の基礎コマンド登録
-     */
+    // skyjourney用の基礎コマンド登録
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess,
             CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal("sj")

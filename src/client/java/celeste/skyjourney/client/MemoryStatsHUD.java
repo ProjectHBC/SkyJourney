@@ -30,7 +30,7 @@ public class MemoryStatsHUD implements HudRenderCallback {
 
     @Override
     public void onHudRender(DrawContext context, float tickDelta) {
-        if (!SkyJourneyConfig.showDebugHUD) {
+        if (!SkyJourneyConfig.getInstance().showDebugHUD) {
             return;
         }
 
@@ -46,7 +46,7 @@ public class MemoryStatsHUD implements HudRenderCallback {
         String memText = String.format("Server Mem: %d%% (%d/%d MB)", pct, used / 1024 / 1024, max / 1024 / 1024);
 
         String bakingText;
-        if (!SkyJourneyConfig.enableTerrainBakingOptimization) {
+        if (!SkyJourneyConfig.getInstance().enableTerrainBakingOptimization) {
             bakingText = "Baking Opt: False";
         } else if (totalChunks > 0) {
             int eff = (int) ((double) skippedChunks / totalChunks * 100);

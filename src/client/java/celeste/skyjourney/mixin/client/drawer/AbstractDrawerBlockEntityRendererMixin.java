@@ -24,7 +24,7 @@ public class AbstractDrawerBlockEntityRendererMixin {
 
     // 視界判定の突破
     public boolean rendersOutsideBoundingBox(BlockEntity blockEntity) {
-        if (!SkyJourneyConfig.enableDrawerFix) { return false; }
+        if (!SkyJourneyConfig.getInstance().enableDrawerFix) { return false; }
         if (blockEntity.hasWorld() && VSGameUtilsKt.getShipManagingPos(blockEntity.getWorld(), blockEntity.getPos()) != null) { return true; }
         return false;
     }
@@ -37,7 +37,7 @@ public class AbstractDrawerBlockEntityRendererMixin {
     private BlockPos onShouldRender(BlockEntity instance) {
         World world = instance.getWorld();
         BlockPos pos = instance.getPos();
-        if (!SkyJourneyConfig.enableDrawerFix) { return pos; }
+        if (!SkyJourneyConfig.getInstance().enableDrawerFix) { return pos; }
         if (world != null) {
             ClientShip ship = (ClientShip) VSGameUtilsKt.getShipManagingPos(world, pos);
             if (ship != null) {
@@ -55,7 +55,7 @@ public class AbstractDrawerBlockEntityRendererMixin {
         at = @At(value = "INVOKE", target = "Lio/github/mattidragon/extendeddrawers/config/category/ClientCategory;textRenderDistance()I")
     )
     private int wrapTextDistance(ClientCategory instance, Operation<Integer> original, @Local(argsOnly = true) World world, @Local(argsOnly = true) BlockPos pos) {
-        if (!SkyJourneyConfig.enableDrawerFix) { return original.call(instance); }
+        if (!SkyJourneyConfig.getInstance().enableDrawerFix) { return original.call(instance); }
         if (world != null && VSGameUtilsKt.getShipManagingPos(world, pos) != null) { return Integer.MAX_VALUE; }
         return original.call(instance);
     }
@@ -65,7 +65,7 @@ public class AbstractDrawerBlockEntityRendererMixin {
         at = @At(value = "INVOKE", target = "Lio/github/mattidragon/extendeddrawers/config/category/ClientCategory;iconRenderDistance()I")
     )
     private int wrapIconDistance(ClientCategory instance, Operation<Integer> original, @Local(argsOnly = true) World world, @Local(argsOnly = true) BlockPos pos) {
-        if (!SkyJourneyConfig.enableDrawerFix) { return original.call(instance); }
+        if (!SkyJourneyConfig.getInstance().enableDrawerFix) { return original.call(instance); }
         if (world != null && VSGameUtilsKt.getShipManagingPos(world, pos) != null) { return Integer.MAX_VALUE; }
         return original.call(instance);
     }
@@ -75,7 +75,7 @@ public class AbstractDrawerBlockEntityRendererMixin {
         at = @At(value = "INVOKE", target = "Lio/github/mattidragon/extendeddrawers/config/category/ClientCategory;itemRenderDistance()I")
     )
     private int wrapItemDistance(ClientCategory instance, Operation<Integer> original, @Local(argsOnly = true) World world, @Local(argsOnly = true) BlockPos pos) {
-        if (!SkyJourneyConfig.enableDrawerFix) { return original.call(instance); }
+        if (!SkyJourneyConfig.getInstance().enableDrawerFix) { return original.call(instance); }
         if (world != null && VSGameUtilsKt.getShipManagingPos(world, pos) != null) { return Integer.MAX_VALUE; }
         return original.call(instance);
     }

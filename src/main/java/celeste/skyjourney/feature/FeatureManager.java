@@ -1,7 +1,6 @@
 package celeste.skyjourney.feature;
 
 import celeste.skyjourney.SkyJourneyMod;
-import celeste.skyjourney.mixin.plugin.SkyJourneyPluginState;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,9 +11,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * MOD内の各機能のライフサイクルと設定を管理
- */
+// MOD内の各機能のライフサイクルと設定を管理
+// 機能をSkyJourneyConfigに統一したので不要なクラス
+@Deprecated
 public class FeatureManager {
 
     private static Config config = new Config();
@@ -22,7 +21,6 @@ public class FeatureManager {
 
     public static void init() {
         loadConfig();
-        SkyJourneyPluginState.checkPlugin(config);
 
         if (config.enableSneakFix) {
             SkyJourneyMod.LOGGER.info("Feature: SneakGroundFix [ENABLED]");
@@ -65,18 +63,6 @@ public class FeatureManager {
         } catch (IOException e) {
             SkyJourneyMod.LOGGER.error("Failed to save config", e);
         }
-    }
-
-    public static boolean isSneakFixEnabled() {
-        return config.enableSneakFix;
-    }
-
-    public static boolean isVillagerFixEnabled() {
-        return config.enableVillagerFix;
-    }
-
-    public static boolean isDrawerFixEnabled() {
-        return config.enableDrawerFix;
     }
 
     public static class Config {

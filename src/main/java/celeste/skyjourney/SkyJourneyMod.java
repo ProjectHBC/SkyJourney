@@ -1,7 +1,6 @@
 package celeste.skyjourney;
 
 import celeste.skyjourney.command.SkyJourneyCommand;
-import celeste.skyjourney.feature.FeatureManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
@@ -20,7 +19,6 @@ public class SkyJourneyMod implements ModInitializer {
     public void onInitialize() {
         celeste.skyjourney.config.SkyJourneyConfig.load();
         LOGGER.info("[SkyJourney] Initializing modules...");
-        FeatureManager.init();
         CommandRegistrationCallback.EVENT.register(SkyJourneyCommand::register);
 
         ServerTickEvents.START_WORLD_TICK.register(TerrainOptimizationManager::onWorldTick);

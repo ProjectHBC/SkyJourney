@@ -16,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
+import celeste.skyjourney.config.SkyJourneyConfig;
+
 import java.util.Optional;
 
 @Mixin(EatGrassGoal.class)
@@ -26,6 +28,7 @@ public abstract class EatGrassGoalMixin {
     //判定座標だけを船上に書き換え
     @Redirect(method = {"canStart", "tick"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;getBlockPos()Lnet/minecraft/util/math/BlockPos;"))
     private BlockPos redirectGetBlockPos(MobEntity mob) {
+        if (!SkyJourneyConfig.getInstance().enableEatGrassFix) { return mob.getBlockPos(); }
         BlockPos originalPos = mob.getBlockPos();
 
         if (mob instanceof SheepEntity sheep && !sheep.isSheared()) {

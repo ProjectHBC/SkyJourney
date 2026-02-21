@@ -16,7 +16,7 @@ public abstract class SneakMixin {
      */
     @ModifyVariable(method = "move", at = @At("HEAD"), argsOnly = true)
     private Vec3d onMoveHead(Vec3d movement) {
-        if (!SkyJourneyConfig.enableSneakFix)
+        if (!SkyJourneyConfig.getInstance().enableSneakFix)
             return movement;
 
         Entity self = (Entity) (Object) this;
