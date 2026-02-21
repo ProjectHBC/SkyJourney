@@ -21,6 +21,7 @@ public class SkyJourneyConfig {
     public boolean enableVillagerFix = true;
     public boolean enableBalloonPPEFix = true;
     public boolean enableDrawerFix = false;
+    public boolean enableEatGrassFix = true;
 
     // クライアント
     public boolean showDebugHUD = false;
