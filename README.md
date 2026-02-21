@@ -3,8 +3,16 @@
 SkyJourneyは、[Valkyrien Skies 2](https://valkyrienskies.org/) (VS2) 環境下でのゲームプレイ体験を向上させるための、最適化およびバグ修正Modです。  
 このModは、VS2導入環境で発生しがちなパフォーマンス問題（地形Bakingによるラグ）や、村人のAI挙動（船上での就職・補充問題）などを修正・改善します。  
   
-ゆっくり実況者のHegadelの[空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) シリーズを快適にプレイする目的で作成しています。
-<img src="https://i.ytimg.com/vi/N-VOYABfogw/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCQvPmP0IJkhZZTFJWyAfJEAO8dWA" />
+ゆっくり実況者のHegadelの [空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) シリーズを快適にプレイする目的で作成しています。
+<img src="https://i.ytimg.com/vi/N-VOYABfogw/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCQvPmP0IJkhZZTFJWyAfJEAO8dWA" />  
+
+## **注意！(CAUTION!)**  
+動作環境以外での動作を想定していません。記述バージョン以外での障害には対応しかねません。  
+現在、使用しているシリーズが完結したため今後重要度の高い障害が発生しない限り修正は行いません。  
+(もしかしたらS2で使うのであれば継続するかも？)  
+
+Operation is not intended for environments other than the specified system requirements. We may be unable to address issues occurring in versions other than those described.  
+I made this mod for my own private use, and I’m now finished with it. Because of that, I won't be updating it anymore. I'll only consider putting out a fix if someone finds a really major, game-breaking bug. Thanks for understanding!
 
 ## 主な機能 (Features)
 
