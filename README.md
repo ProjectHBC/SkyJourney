@@ -1,10 +1,17 @@
 # SkyJourney
+[![release](https://img.shields.io/github/release/ProjectHBC/SkyJourney?logo=github)](https://github.com/ProjectHBC/SkyJourney/releases)
+[![license](https://img.shields.io/github/license/ProjectHBC/SkyJourney?logo=github)](https://github.com/ProjectHBC/SkyJourney/blob/master/LICENSE)
+[![downloads](https://img.shields.io/github/downloads/ProjectHBC/SkyJourney/total?logo=github)](https://github.com/ProjectHBC/SkyJourney/releases/latest)  
+
+--- 
 
 SkyJourneyは、[Valkyrien Skies 2](https://valkyrienskies.org/) (VS2) 環境下でのゲームプレイ体験を向上させるための、最適化およびバグ修正Modです。  
 このModは、VS2導入環境で発生しがちなパフォーマンス問題（地形Bakingによるラグ）や、村人のAI挙動（船上での就職・補充問題）などを修正・改善します。  
   
 ゆっくり実況者のHegadelの [空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) シリーズを快適にプレイする目的で作成しています。
 <img src="https://i.ytimg.com/vi/N-VOYABfogw/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCQvPmP0IJkhZZTFJWyAfJEAO8dWA" />  
+
+### S1最終Verダウンロードはここから -> [Download Link](https://github.com/ProjectHBC/SkyJourney/releases/latest/download/skyjourney-1.4.2.jar)
 
 ## **注意！(CAUTION!)**  
 動作環境以外での動作を想定していません。記述バージョン以外での障害には対応しかねません。  
@@ -34,6 +41,7 @@ ON
 *   **風船への投擲物の挙動変更**：風船に投擲系が当たった場合でも割れないよう修正。
 *   **Drawerの挙動を修正**：Drawerを船でも使用できなかった問題を修正。
 *   **羊の動作を修正**：羊が草ブロックの上でも食べない問題を修正。
+
 
 ## 動作環境 (Requirements)
 *   Minecraft (Fabric)
