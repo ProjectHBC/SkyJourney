@@ -196,5 +196,6 @@ public class SkyjourneyClient implements ClientModInitializer {
 
         HudRenderCallback.EVENT.register(new MemoryStatsHUD());
         WorldRenderEvents.AFTER_TRANSLUCENT.register(OptimizationDebugRenderer::render);
+        WorldRenderEvents.LAST.register(SneakDebugRenderer::render);
     }
 }

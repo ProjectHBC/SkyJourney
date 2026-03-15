@@ -104,6 +104,14 @@ public class SkyJourneyModMenuIntegration implements ModMenuApi {
 				.build();
 			clientCategory.addEntry(showDebugHUDEntry);
 
+            var showDebugSneakBoxEntry = entryBuilder
+				.startBooleanToggle(Text.of("Show Debug Sneak Box"), SkyJourneyConfig.getInstance().showDebugSneakBox)
+				.setDefaultValue(false)
+				.setTooltip(Text.of("Displays bounding box used when sneaking on the ship visible."))
+				.setSaveConsumer(newValue -> SkyJourneyConfig.getInstance().showDebugSneakBox = newValue)
+				.build();
+			clientCategory.addEntry(showDebugSneakBoxEntry);
+
 			return builder.build();
 		};
 	}

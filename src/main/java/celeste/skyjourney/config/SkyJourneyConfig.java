@@ -25,6 +25,7 @@ public class SkyJourneyConfig {
 
     // クライアント
     public boolean showDebugHUD = false;
+    public boolean showDebugSneakBox = true;
 
     // サーバー管理フラグ
     private transient boolean managedByServer = false;
@@ -51,6 +52,7 @@ public class SkyJourneyConfig {
 
                 // クライアント設定は同期しない
                 data.showDebugHUD = instance.showDebugHUD;
+                data.showDebugSneakBox = instance.showDebugSneakBox;
 
                 // それ以外を同期させる
                 instance = data;
