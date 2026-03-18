@@ -2,6 +2,7 @@ package celeste.skyjourney.mixin;
 
 import celeste.skyjourney.config.SkyJourneyConfig;
 import celeste.skyjourney.feature.sneak.SneakGroundFix;
+import celeste.skyjourney.feature.sneak.SneakMode;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,13 +17,20 @@ public abstract class SneakMixin {
      */
     @ModifyVariable(method = "move", at = @At("HEAD"), argsOnly = true)
     private Vec3d onMoveHead(Vec3d movement) {
-        if (!SkyJourneyConfig.getInstance().enableSneakFix)
+        if (!SkyJourneyConfig.getInstance().enableSneakFix) { 
             return movement;
+        }
 
         Entity self = (Entity) (Object) this;
 
         if (self.isSneaking() && SneakGroundFix.isOnShipSurface(self)) {
-            return SneakGroundFix.adjustMovement(self, movement);
+            SneakMode currentMode = SkyJourneyConfig.getInstance().sneakMode;
+            switch (currentMode) {
+                case SMART_ANCHOR:
+                    return SneakGroundFix.SmartAnchor.adjustMovement(self, movement);
+                case CROSS_ANCHOR:
+                    return SneakGroundFix.CrossAnchor.adjustMovement(self, movement);
+            }
         }
 
         return movement;

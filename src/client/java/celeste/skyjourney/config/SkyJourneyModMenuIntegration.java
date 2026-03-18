@@ -3,6 +3,7 @@ package celeste.skyjourney.config;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 
+import celeste.skyjourney.feature.sneak.SneakMode;
 import celeste.skyjourney.mixin.plugin.SkyJourneyPluginState;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -48,6 +49,15 @@ public class SkyJourneyModMenuIntegration implements ModMenuApi {
             if (isLocked) { bakingYEntry.setEditable(false); }
             serverCategory.addEntry(bakingYEntry);
 
+            var sneakModeEntry = entryBuilder
+                .startEnumSelector(Text.of("Sneak Fix Mode"), SneakMode.class, SkyJourneyConfig.getInstance().sneakMode)
+                .setDefaultValue(SneakMode.SMART_ANCHOR)
+                .setTooltip(Text.of("Select the collision logic for sneaking on ships.").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked) { SkyJourneyConfig.getInstance().sneakMode = newValue; }})
+                .build();
+            if (isLocked) { sneakModeEntry.setEditable(false); }
+            serverCategory.addEntry(sneakModeEntry);
+
             var sneakEntry = entryBuilder
                 .startBooleanToggle(Text.of("Enable Sneak Fix"), SkyJourneyConfig.getInstance().enableSneakFix)
                 .setDefaultValue(true)
@@ -65,6 +75,15 @@ public class SkyJourneyModMenuIntegration implements ModMenuApi {
                 .build();
             if (isLocked) { villagerEntry.setEditable(false); }
             serverCategory.addEntry(villagerEntry);
+
+            var eatGrassEntry = entryBuilder
+                .startBooleanToggle(Text.of("Enable Grass Fix"), SkyJourneyConfig.getInstance().enableEatGrassFix)
+                .setDefaultValue(true)
+                .setTooltip(Text.of("Allow sheep to eat grass on the ship.").copy().append(tooltipSuffix))
+                .setSaveConsumer(newValue -> { if (!isLocked) { SkyJourneyConfig.getInstance().enableEatGrassFix = newValue; }})
+                .build();
+            if (isLocked) { eatGrassEntry.setEditable(false); }
+            serverCategory.addEntry(eatGrassEntry);
 
             var balloonPPEEntry = entryBuilder
                 .startBooleanToggle(Text.of("Enable Balloon PersistentProjectileEntity Fix"), SkyJourneyConfig.getInstance().enableBalloonPPEFix)

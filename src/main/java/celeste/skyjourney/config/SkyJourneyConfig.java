@@ -3,6 +3,7 @@ package celeste.skyjourney.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import celeste.skyjourney.feature.sneak.SneakMode;
 import celeste.skyjourney.mixin.plugin.SkyJourneyPluginState;
 import net.fabricmc.loader.api.FabricLoader;
 import java.io.Reader;
@@ -12,11 +13,12 @@ import java.nio.file.Path;
 
 public class SkyJourneyConfig {
     // サーバー
-    public boolean enableTerrainBakingOptimization = true;
     public int bakingYBuffer = 32;
     public int memoryPollInterval = 20;
+    public SneakMode sneakMode = SneakMode.SMART_ANCHOR;
 
     // 機能トグル
+    public boolean enableTerrainBakingOptimization = true;
     public boolean enableSneakFix = true;
     public boolean enableVillagerFix = true;
     public boolean enableBalloonPPEFix = true;
@@ -25,7 +27,7 @@ public class SkyJourneyConfig {
 
     // クライアント
     public boolean showDebugHUD = false;
-    public boolean showDebugSneakBox = true;
+    public boolean showDebugSneakBox = false;
 
     // サーバー管理フラグ
     private transient boolean managedByServer = false;
