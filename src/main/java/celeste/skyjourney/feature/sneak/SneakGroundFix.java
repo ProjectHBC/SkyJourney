@@ -4,7 +4,7 @@ import org.joml.Vector3d;
 import org.valkyrienskies.core.api.ships.Ship;
 
 import celeste.skyjourney.common.VSHelper;
-import celeste.skyjourney.mixin.LivingEntityAccessor;
+import celeste.skyjourney.mixin.accessor.LivingEntityAccessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;

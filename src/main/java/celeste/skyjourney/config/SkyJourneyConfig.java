@@ -24,6 +24,7 @@ public class SkyJourneyConfig {
     public boolean enableBalloonPPEFix = true;
     public boolean enableDrawerFix = false;
     public boolean enableEatGrassFix = true;
+    public boolean enablePPEOnShipFix = true;
 
     // クライアント
     public boolean showDebugHUD = false;

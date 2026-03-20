@@ -1,4 +1,4 @@
-package celeste.skyjourney.mixin;
+package celeste.skyjourney.mixin.accessor;
 
 import net.minecraft.world.poi.PointOfInterest;
 import org.spongepowered.asm.mixin.Mixin;
