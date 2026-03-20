@@ -1,6 +1,5 @@
 package celeste.skyjourney.command.data;
 
-import org.joml.Quaterniond;
 import org.joml.Quaterniondc;
 import org.joml.Vector3dc;
 import org.joml.primitives.AABBic;
