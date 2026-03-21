@@ -3,7 +3,8 @@ package celeste.skyjourney.mixin;
 import celeste.skyjourney.common.GhostPOIManager;
 import celeste.skyjourney.common.VSHelper;
 import celeste.skyjourney.config.SkyJourneyConfig;
-
+import celeste.skyjourney.mixin.accessor.PointOfInterestAccessor;
+import celeste.skyjourney.mixin.accessor.VillagerEntityAccessor;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.passive.VillagerEntity;

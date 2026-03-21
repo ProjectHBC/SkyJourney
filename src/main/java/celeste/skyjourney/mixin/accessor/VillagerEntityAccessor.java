@@ -1,4 +1,4 @@
-package celeste.skyjourney.mixin;
+package celeste.skyjourney.mixin.accessor;
 
 import net.minecraft.entity.passive.VillagerEntity;
 import org.spongepowered.asm.mixin.Mixin;

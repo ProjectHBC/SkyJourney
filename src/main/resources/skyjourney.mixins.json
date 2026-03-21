@@ -6,20 +6,21 @@
   "refmap": "skyjourney.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "accessor.LivingEntityAccessor",
+    "accessor.PointOfInterestAccessor",
+    "accessor.VillagerEntityAccessor",
     "SneakMixin",
-    "LivingEntityAccessor",
     "VillagerShipMixin",
     "TerrainBakingOptimizationMixin",
     "PointOfInterestStorageMixin",
-    "PointOfInterestAccessor",
-    "VillagerEntityAccessor",
     "ServerWorldMixin",
     "PlacementCollisionMixin",
     "WorldChunkMixin",
     "ChunkSectionMixin",
     "BalloonBlockMixin",
     "drawer.DrawerInteractionMixin",
-    "EatGrassGoalMixin"
+    "EatGrassGoalMixin",
+    "PersistentProjectileEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
