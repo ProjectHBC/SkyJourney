@@ -11,7 +11,7 @@ SkyJourneyは、[Valkyrien Skies 2](https://valkyrienskies.org/) (VS2) 環境下
 ゆっくり実況者のHegadelの [空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) シリーズを快適にプレイする目的で作成しています。
 <img src="https://i.ytimg.com/vi/N-VOYABfogw/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCQvPmP0IJkhZZTFJWyAfJEAO8dWA" />  
 
-### S1最終Verダウンロードはここから -> [Download Link](https://github.com/ProjectHBC/SkyJourney/releases/latest/download/skyjourney-1.4.2.jar)  
+### S1最終Verダウンロードはここから -> [Download Link](https://github.com/ProjectHBC/SkyJourney/releases/download/v1.4.2/skyjourney-1.4.2.jar) 
 ※[Latest(v2.0.0以降)の取り扱いについて](#v200以降の取り扱いについて)
 
 ## **注意！(CAUTION!)**  
