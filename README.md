@@ -11,12 +11,12 @@ SkyJourneyは、[Valkyrien Skies 2](https://valkyrienskies.org/) (VS2) 環境下
 ゆっくり実況者のHegadelの [空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) シリーズを快適にプレイする目的で作成しています。
 <img src="https://i.ytimg.com/vi/N-VOYABfogw/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCQvPmP0IJkhZZTFJWyAfJEAO8dWA" />  
 
-### S1最終Verダウンロードはここから -> [Download Link](https://github.com/ProjectHBC/SkyJourney/releases/latest/download/skyjourney-1.4.2.jar)
+### S1最終Verダウンロードはここから -> [Download Link](https://github.com/ProjectHBC/SkyJourney/releases/latest/download/skyjourney-1.4.2.jar)  
+※[Latest(v2.0.0以降)の取り扱いについて](#v200以降の取り扱いについて)
 
 ## **注意！(CAUTION!)**  
 動作環境以外での動作を想定していません。記述バージョン以外での障害には対応しかねません。  
 現在、使用しているシリーズが完結したため今後重要度の高い障害が発生しない限り修正は行いません。  
-(もしかしたらS2で使うのであれば継続するかも？)  
 
 Operation is not intended for environments other than the specified system requirements. We may be unable to address issues occurring in versions other than those described.  
 I made this mod for my own private use, and I’m now finished with it. Because of that, I won't be updating it anymore. I'll only consider putting out a fix if someone finds a really major, game-breaking bug. Thanks for understanding!
@@ -49,6 +49,13 @@ ON
 *   Valkyrien Skies 2 (2.3.0-beta.10)
 *   Cloth Config API (設定画面用)
 *   Mod Menu (設定画面へのアクセス用)
+
+## v2.0.0以降の取り扱いについて
+v2.0.0以降のバージョンは、シーズン2の動画シリーズ進行に合わせて開発・デバッグを行うため、動作が不安定になる可能性があります。  
+そのため、当面の間は「Beta版」として公開いたします。安定した環境を求める方は、S1最終版（v1.4.2）をご利用ください。  
+
+Versions from v2.0.0 onwards will be developed and debugged in tandem with the Season 2 video series.  
+As these versions may be unstable, they are treated as Beta releases. For a stable experience, please use the final S1 release (v1.4.2).
 
 ## 免責  
 作者は、本Modの使用により生じた直接的または間接的な損害、損失、または不具合について、一切の責任を負いません。  
