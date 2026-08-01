@@ -12,7 +12,7 @@
 SkyJourney is an optimization and bug-fix mod that improves the gameplay experience in a [Valkyrien Skies 2](https://valkyrienskies.org/) (VS2) environment.  
 It fixes and improves performance issues commonly seen in VS2 setups (lag caused by terrain baking) as well as villager AI behavior (issues with villagers taking jobs / restocking while aboard a ship).  
 
-It was created so that Hegadel, a Japanese commentary creator, could comfortably play through his [空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) series.
+It was created so that Hegadel, a Japanese commentary creator, could comfortably play through his [空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) series.  
 <img src="https://i.ytimg.com/vi/N-VOYABfogw/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCQvPmP0IJkhZZTFJWyAfJEAO8dWA" />  
 
 ### Download here -> [Latest Release](https://github.com/ProjectHBC/SkyJourney/releases/latest)
