@@ -5,61 +5,55 @@
 
 --- 
 
-SkyJourneyは、[Valkyrien Skies 2](https://valkyrienskies.org/) (VS2) 環境下でのゲームプレイ体験を向上させるための、最適化およびバグ修正Modです。  
-このModは、VS2導入環境で発生しがちなパフォーマンス問題（地形Bakingによるラグ）や、村人のAI挙動（船上での就職・補充問題）などを修正・改善します。  
-  
-ゆっくり実況者のHegadelの [空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) シリーズを快適にプレイする目的で作成しています。
+**[日本語版はこちら / Japanese version here](README.ja.md)**
+
+---
+
+SkyJourney is an optimization and bug-fix mod that improves the gameplay experience in a [Valkyrien Skies 2](https://valkyrienskies.org/) (VS2) environment.  
+It fixes and improves performance issues commonly seen in VS2 setups (lag caused by terrain baking) as well as villager AI behavior (issues with villagers taking jobs / restocking while aboard a ship).  
+
+It was created so that Hegadel, a Japanese commentary creator, could comfortably play through his [空飛ぶ拠点で旅をする](https://www.youtube.com/playlist?list=PLviBljJRqhECceg-JE9yRw5EpnrxutIg5) series.
 <img src="https://i.ytimg.com/vi/N-VOYABfogw/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCQvPmP0IJkhZZTFJWyAfJEAO8dWA" />  
 
-### S1最終Verダウンロードはここから -> [Download Link](https://github.com/ProjectHBC/SkyJourney/releases/download/v1.4.2/skyjourney-1.4.2.jar) 
-※[Latest(v2.0.0以降)の取り扱いについて](#v200以降の取り扱いについて)
+### Download here -> [Latest Release](https://github.com/ProjectHBC/SkyJourney/releases/latest)
 
-## **注意！(CAUTION!)**  
-動作環境以外での動作を想定していません。記述バージョン以外での障害には対応しかねません。  
-現在、使用しているシリーズが完結したため今後重要度の高い障害が発生しない限り修正は行いません。  
-
+## **CAUTION!**  
 Operation is not intended for environments other than the specified system requirements. We may be unable to address issues occurring in versions other than those described.  
-I made this mod for my own private use, and I’m now finished with it. Because of that, I won't be updating it anymore. I'll only consider putting out a fix if someone finds a really major, game-breaking bug. Thanks for understanding!
 
-## 主な機能 (Features)
+The video series this mod was made for has now come to an end, so from here on I will only address extremely urgent, game-breaking bugs. I won't be doing any further active development. Thanks for understanding!
 
-### 1. 地形物理演算の最適化 (Terrain Baking Optimization)
-*   **動的な範囲制限**: プレイヤーや稼働中の船の周囲（デフォルト: Y高度 ±32ブロック）のみ物理判定を有効にします。
-*   Big Globeなど上下の限界突破されているワールド時に(多分)有効です。
+## Features
+
+### 1. Terrain Baking Optimization
+*   **Dynamic range limiting**: Enables physics calculations only within a certain range around the player or an active ship (default: ±32 blocks vertically).
+*   Likely useful (probably) in worlds like Big Globe where the vertical build limit has been extended.
 
 OFF
 <img width="1441" height="180" alt="image" src="https://github.com/user-attachments/assets/258d4f8d-c376-40dd-972b-8e00965c5102" />  
 ON 
 <img width="1529" height="257" alt="image" src="https://github.com/user-attachments/assets/3d8b7901-5d3d-4667-b515-7ab23c74df97" />
 
-### 2. 村人AIの船上対応 (Villager AI Improvements)
-*   **船上のPOI検索**: 船に設置された職業ブロックを正しく認識し、バニラ同様の挙動をできるようにします。
+### 2. Villager AI Improvements
+*   **Onboard POI detection**: Correctly recognizes job-site blocks placed on ships, restoring vanilla-like villager behavior.
 
-### 3. その他の修正 (Quality of Life Fixes)
-*   **スニーク挙動の修正**: 船上や斜面でのスニーク時の挙動を改善。
-*   **ブロック設置判定の修正**: 船上で自分の位置にブロックをおける問題を修正。
-*   **風船への投擲物の挙動変更**：風船に投擲系が当たった場合でも割れないよう修正。
-*   **Drawerの挙動を修正**：Drawerを船でも使用できなかった問題を修正。
-*   **羊の動作を修正**：羊が草ブロックの上でも食べない問題を修正。
+### 3. Quality of Life Fixes
+*   **Sneak behavior fix**: Improved sneaking behavior on ships and slopes.
+*   **Block placement fix**: Fixed an issue where blocks could be placed at the player's own position while on a ship.
+*   **Balloon projectile fix**: Fixed thrown projectiles not popping balloons on hit.
+*   **Drawer fix**: Fixed Drawers not working while aboard a ship.
+*   **Sheep behavior fix**: Fixed sheep not eating grass blocks while standing on top of them.
 
 
-## 動作環境 (Requirements)
+## Requirements
 *   Minecraft (Fabric)
 *   Fabric API
 *   Valkyrien Skies 2 (2.3.0-beta.10)
-*   Cloth Config API (設定画面用)
-*   Mod Menu (設定画面へのアクセス用)
+*   Cloth Config API (for the settings screen)
+*   Mod Menu (to access the settings screen)
 
-## v2.0.0以降の取り扱いについて
-v2.0.0以降のバージョンは、シーズン2の動画シリーズ進行に合わせて開発・デバッグを行うため、動作が不安定になる可能性があります。  
-そのため、当面の間は「Beta版」として公開いたします。安定した環境を求める方は、S1最終版（v1.4.2）をご利用ください。  
-
-Versions from v2.0.0 onwards will be developed and debugged in tandem with the Season 2 video series.  
-As these versions may be unstable, they are treated as Beta releases. For a stable experience, please use the final S1 release (v1.4.2).
-
-## 免責  
-作者は、本Modの使用により生じた直接的または間接的な損害、損失、または不具合について、一切の責任を負いません。  
-本Modの利用はユーザー自身の責任において行ってください。
+## Disclaimer  
+The author assumes no responsibility for any direct or indirect damage, loss, or malfunction resulting from the use of this mod.  
+Use of this mod is entirely at your own risk.
 
 
 ## License
